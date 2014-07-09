@@ -2,16 +2,17 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.SwingConstants;
-import javax.swing.JTextField;
+
+import logic.DataManager;
 
 public class Window extends JFrame {
 	
@@ -25,9 +26,8 @@ public class Window extends JFrame {
 	private JSlider slider6;
 	private JSlider slider7;
 	private JSlider slider8;
-	private JTextField textField;
 	private JButton jButton;
-	private JScrollPane scrollPane;
+	private ArrayList<String> data;
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -48,6 +48,7 @@ public class Window extends JFrame {
 	}
 	
 	private void initialize() {
+		data = new ArrayList<String>();
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
@@ -67,10 +68,7 @@ public class Window extends JFrame {
 		slider7.setOrientation(SwingConstants.VERTICAL);
 		slider8 = new JSlider();
 		slider8.setOrientation(SwingConstants.VERTICAL);
-		textField = new JTextField();
-		textField.setColumns(10);
 		jButton = new JButton();
-		scrollPane = new JScrollPane();
 		contentPane.add(slider1);
 		contentPane.add(slider2);
 		contentPane.add(slider3);
@@ -79,16 +77,26 @@ public class Window extends JFrame {
 		contentPane.add(slider6);
 		contentPane.add(slider7);
 		contentPane.add(slider8);
-		contentPane.add(textField);
 		contentPane.add(jButton);
-		contentPane.add(scrollPane);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
 	}
 	
 	private void actions() {
-		slider1.addChangeListener(new ChangeListener() {
+		jButton.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				textField.setText("Time: " + slider1.getValue());
+				data.add(0, "Slider1: "+slider1.getValue());
+				data.add(1, "Slider2: "+slider2.getValue());
+				data.add(2, "Slider3: "+slider3.getValue());
+				data.add(3, "Slider4: "+slider4.getValue());
+				data.add(4, "Slider5: "+slider5.getValue());
+				data.add(5, "Slider6: "+slider6.getValue());
+				data.add(6, "Slider7: "+slider7.getValue());
+				data.add(7, "Slider8: "+slider8.getValue());
+				System.out.println("Windows actions 1" + data.get(0));
+				DataManager dataman = new DataManager(data);
+				System.out.println("Windows actions 2" + data.get(0));
+				dataman.putInTestOne();
+				System.out.println("Windows actions 3" + data.get(0));
 			}
 		});
 	}
