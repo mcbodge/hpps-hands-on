@@ -12,11 +12,9 @@ public class DataManager {
 	
 	private ArrayList<String> data;
 	
-	public void putInTestOne(){
+	public static void putInTestOne(ArrayList<String> data){
 		TestOne startTestOne = new TestOne();
-		System.out.println("dataman 4" + data.get(0));
 		startTestOne.setTestOne(data);
-		System.out.println("dataman 5" + data.get(0));
 		startTestOne.setVisible(true);
 	}
 }

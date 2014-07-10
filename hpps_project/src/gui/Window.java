@@ -48,7 +48,6 @@ public class Window extends JFrame {
 	}
 	
 	private void initialize() {
-		data = new ArrayList<String>();
 		setBounds(100, 100, 450, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
@@ -84,6 +83,7 @@ public class Window extends JFrame {
 	private void actions() {
 		jButton.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
+				data = new ArrayList<String>();
 				data.add(0, "Slider1: "+slider1.getValue());
 				data.add(1, "Slider2: "+slider2.getValue());
 				data.add(2, "Slider3: "+slider3.getValue());
@@ -92,11 +92,8 @@ public class Window extends JFrame {
 				data.add(5, "Slider6: "+slider6.getValue());
 				data.add(6, "Slider7: "+slider7.getValue());
 				data.add(7, "Slider8: "+slider8.getValue());
-				System.out.println("Windows actions 1" + data.get(0));
-				DataManager dataman = new DataManager(data);
-				System.out.println("Windows actions 2" + data.get(0));
-				dataman.putInTestOne();
-				System.out.println("Windows actions 3" + data.get(0));
+				DataManager.putInTestOne(data);
+				
 			}
 		});
 	}
