@@ -2,6 +2,8 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -81,8 +83,9 @@ public class Window extends JFrame {
 	}
 	
 	private void actions() {
-		jButton.addChangeListener(new ChangeListener() {
-			public void stateChanged(ChangeEvent e) {
+		
+		jButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
 				data = new ArrayList<String>();
 				data.add(0, "Slider1: "+slider1.getValue());
 				data.add(1, "Slider2: "+slider2.getValue());
@@ -93,7 +96,7 @@ public class Window extends JFrame {
 				data.add(6, "Slider7: "+slider7.getValue());
 				data.add(7, "Slider8: "+slider8.getValue());
 				DataManager.putInTestOne(data);
-				
+			
 			}
 		});
 	}
