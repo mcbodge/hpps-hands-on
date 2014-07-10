@@ -6,8 +6,6 @@ import gui.TestOne;
 
 public class DataManager {
 	
-	//private ArrayList<String> data;
-	
 	public static void putInTestOne(ArrayList<String> data){
 		TestOne startTestOne = new TestOne(data.toString());
 		startTestOne.setVisible(true);
