@@ -1,7 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
+//import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,8 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-
-import logic.DataManager;
 
 public class Window extends JFrame {
 	
@@ -29,7 +27,7 @@ public class Window extends JFrame {
 	private JButton jButton;
 	private ArrayList<String> data;
 	
-	public static void main(String[] args) {
+/*	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -40,7 +38,7 @@ public class Window extends JFrame {
 				}
 			}
 		});
-	}
+	}*/
 
 	public Window() {
 		initialize();
@@ -78,10 +76,10 @@ public class Window extends JFrame {
 		contentPane.add(slider8);
 		contentPane.add(jButton);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
+		this.setVisible(true);
 	}
 	
 	private void actions() {
-		
 		jButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				data = new ArrayList<String>();
@@ -93,8 +91,7 @@ public class Window extends JFrame {
 				data.add(5, "Slider6: "+slider6.getValue());
 				data.add(6, "Slider7: "+slider7.getValue());
 				data.add(7, "Slider8: "+slider8.getValue());
-				DataManager.putInTestOne(data);
-			
+				new TestOne(data);
 			}
 		});
 	}
