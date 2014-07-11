@@ -83,14 +83,14 @@ public class Window extends JFrame {
 		jButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				data = new ArrayList<String>();
-				data.add(0, "Slider1: "+slider1.getValue());
-				data.add(1, "Slider2: "+slider2.getValue());
-				data.add(2, "Slider3: "+slider3.getValue());
-				data.add(3, "Slider4: "+slider4.getValue());
-				data.add(4, "Slider5: "+slider5.getValue());
-				data.add(5, "Slider6: "+slider6.getValue());
-				data.add(6, "Slider7: "+slider7.getValue());
-				data.add(7, "Slider8: "+slider8.getValue());
+				data.add(0, String.valueOf(slider1.getValue()));
+				data.add(1, String.valueOf(slider2.getValue()));
+				data.add(2, String.valueOf(slider3.getValue()));
+				data.add(3, String.valueOf(slider4.getValue()));
+				data.add(4, String.valueOf(slider5.getValue()));
+				data.add(5, String.valueOf(slider6.getValue()));
+				data.add(6, String.valueOf(slider7.getValue()));
+				data.add(7, String.valueOf(slider8.getValue()));
 				new TestOne(data);
 			}
 		});
