@@ -1,10 +1,12 @@
 package gui;
 
 import javax.swing.JFrame;
+
 import java.awt.BorderLayout;
 import java.util.ArrayList;
-import javax.swing.JTextArea;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import javax.swing.JTextArea;
 
 public class TestOne extends JFrame {
 
@@ -12,14 +14,20 @@ public class TestOne extends JFrame {
 	private static final int NUM_TEMP_VALUES = 8;
 	private JFrame frame;
 	private JTextArea textArea;
-	private ArrayList<String> sliders;
+	private float threshold;
+	private float critical;
+	private ArrayList<String> power;
+	private GregorianCalendar calendar; 
 
 	/**
 	 * Launch the application.
 	 */
-	public TestOne(ArrayList<String> s){
+	public TestOne(float threshold, float critical, ArrayList<String> power){
+		this.threshold = threshold;
+		this.critical = critical;
+		this.power=power;
 		initialize();
-		display(s);
+		display(threshold, critical, power);
 		this.frame.setVisible(true);
 	}
 
@@ -34,24 +42,27 @@ public class TestOne extends JFrame {
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frame.getContentPane().add(textArea, BorderLayout.CENTER);
 		frame.setVisible(true);
+		calendar = new GregorianCalendar();
 	}
 	
-	private void display(ArrayList<String> s){
-		this.sliders=s;
+	private void display(float threshold, float critical, ArrayList<String> power){
 		textArea.append("; The INI file looks like:\n\n");
 		textArea.append("[last_update]\n");
-		textArea.append("y="+Calendar.YEAR+"\n");
-		textArea.append("m="+Calendar.MONTH+"\n");
-		textArea.append("d="+Calendar.DAY_OF_MONTH+"\n");
-		textArea.append("h="+Calendar.HOUR_OF_DAY+Calendar.MINUTE+"\n\n");
+		textArea.append("year="+calendar.get(Calendar.YEAR)+"\n");
+		textArea.append("month="+(calendar.get(Calendar.MONTH)+1)+"\n");
+		textArea.append("day="+calendar.get(Calendar.DAY_OF_MONTH)+"\n");
+		textArea.append("h="+calendar.get(Calendar.HOUR_OF_DAY)+"\n");
+		textArea.append("m="+calendar.get(Calendar.MINUTE)+"\n");
+		textArea.append("s="+calendar.get(Calendar.SECOND)+"\n\n");
+		textArea.append("[temperature_values]\n");
+		textArea.append("threshold="+this.threshold+"\n");
+		textArea.append("critical="+this.critical+"\n\n");
 		textArea.append("[fan_speed]\n");
 		for(int i=0; i<NUM_TEMP_VALUES; i++) {
-			textArea.append(String.valueOf(i+1) + "=" + this.sliders.get(i));
+			textArea.append(String.valueOf(i+1) + "=" + this.power.get(i));
 			textArea.append("\n");
 		}
-		
-		//TODO Aggiungere ordinate (temperature) -- impostate in windows
-		
+				
 		//TODO Aggiungere programma -- impostato in windows
 	}
 }

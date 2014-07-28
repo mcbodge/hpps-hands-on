@@ -3,6 +3,8 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -34,7 +36,7 @@ public class Window extends JFrame {
 	private JComboBox<Integer> comboBox1;
 	private JComboBox<Integer> comboBox2;
 	private GroupLayout groupLayout;
-	private ArrayList<String> data;
+	private ArrayList<String> power;
 	private JLabel lblTthreshold;
 	private JLabel lblTcritical;
 	private JLabel lbl1;
@@ -218,21 +220,21 @@ public class Window extends JFrame {
 	private void actions() {
 		jButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				data = new ArrayList<String>();
-				data.add(0, String.valueOf(slider1.getValue()));
-				data.add(1, String.valueOf(slider2.getValue()));
-				data.add(2, String.valueOf(slider3.getValue()));
-				data.add(3, String.valueOf(slider4.getValue()));
-				data.add(4, String.valueOf(slider5.getValue()));
-				data.add(5, String.valueOf(slider6.getValue()));
-				data.add(6, String.valueOf(slider7.getValue()));
-				data.add(7, String.valueOf(slider8.getValue()));
-				new TestOne(data);
+				power = new ArrayList<String>();
+				power.add(0, String.valueOf(slider1.getValue()));
+				power.add(1, String.valueOf(slider2.getValue()));
+				power.add(2, String.valueOf(slider3.getValue()));
+				power.add(3, String.valueOf(slider4.getValue()));
+				power.add(4, String.valueOf(slider5.getValue()));
+				power.add(5, String.valueOf(slider6.getValue()));
+				power.add(6, String.valueOf(slider7.getValue()));
+				power.add(7, String.valueOf(slider8.getValue()));
+				new TestOne(threshold, critical, power);
 			}
 		});
 		
-		comboBox1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		comboBox1.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
 				threshold = (Integer) comboBox1.getSelectedItem();
 				lbl1.setText(String.format("%.1f", (threshold)));
 				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
@@ -242,16 +244,21 @@ public class Window extends JFrame {
 				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
 				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
 				lbl8.setText(String.format("%.1f", (critical)));
-				comboBox2.removeAllItems();
-				for (int i=(int) comboBox1.getSelectedItem(); i<Tmax; i++){
-					comboBox2.addItem(i);
+				if (threshold>critical){
+					comboBox2.removeAllItems();
+					for (int i=(int) comboBox1.getSelectedItem(); i<Tmax; i++){
+						comboBox2.addItem(i);
+					}
 				}
 			}
 		});
 		
-		comboBox2.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				critical = (Integer) comboBox2.getSelectedItem();
+		comboBox2.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				if (comboBox2.getSelectedItem()==null)
+					critical = threshold;
+				else
+					critical = (Integer) comboBox2.getSelectedItem();
 				lbl1.setText(String.format("%.1f", (threshold)));
 				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
 				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
