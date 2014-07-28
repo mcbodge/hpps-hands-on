@@ -1,7 +1,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-//import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -11,10 +10,17 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import javax.swing.JComboBox;
+import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.JLabel;
 
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
+	private static final int Tmin = -40;
+	private static final int Tmax = 120;
 	private JPanel contentPane;
 	private JSlider slider1;
 	private JSlider slider2;
@@ -25,20 +31,22 @@ public class Window extends JFrame {
 	private JSlider slider7;
 	private JSlider slider8;
 	private JButton jButton;
+	private JComboBox<Integer> comboBox1;
+	private JComboBox<Integer> comboBox2;
+	private GroupLayout groupLayout;
 	private ArrayList<String> data;
-	
-/*	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Window frame = new Window();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}*/
+	private JLabel lblTthreshold;
+	private JLabel lblTcritical;
+	private JLabel lbl1;
+	private JLabel lbl2;
+	private JLabel lbl3;
+	private JLabel lbl4;
+	private JLabel lbl5;
+	private JLabel lbl6;
+	private JLabel lbl7;
+	private JLabel lbl8;
+	private float threshold;
+	private float critical;
 
 	public Window() {
 		initialize();
@@ -46,7 +54,7 @@ public class Window extends JFrame {
 	}
 	
 	private void initialize() {
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 550, 300);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
 		slider1 = new JSlider();
@@ -66,16 +74,144 @@ public class Window extends JFrame {
 		slider8 = new JSlider();
 		slider8.setOrientation(SwingConstants.VERTICAL);
 		jButton = new JButton();
-		contentPane.add(slider1);
-		contentPane.add(slider2);
-		contentPane.add(slider3);
-		contentPane.add(slider4);
-		contentPane.add(slider5);
-		contentPane.add(slider6);
-		contentPane.add(slider7);
-		contentPane.add(slider8);
-		contentPane.add(jButton);
+		comboBox1 = new JComboBox<Integer>();
+		comboBox2 = new JComboBox<Integer>();
+		lblTthreshold = new JLabel("Tthreshold:");
+		lblTcritical = new JLabel("Tcritical:");
+		threshold = Tmin;
+		critical = Tmax;
+		lbl1 = new JLabel(String.format("%.1f", (threshold)));
+		lbl2 = new JLabel(String.format("%.1f", (threshold+(critical-threshold)/7)));
+		lbl3 = new JLabel(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
+		lbl4 = new JLabel(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
+		lbl5 = new JLabel(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
+		lbl6 = new JLabel(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
+		lbl7 = new JLabel(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
+		lbl8 = new JLabel(String.format("%.1f", (critical)));
 		getContentPane().add(contentPane, BorderLayout.CENTER);
+		
+		comboBox1.addItem(null);
+		for(int i=Tmin; i<Tmax; i++){
+			comboBox1.addItem(i);
+		}
+		
+		comboBox2.addItem(null);
+		for(int i=Tmin; i<Tmax; i++){
+			comboBox2.addItem(i);
+		}
+			
+		groupLayout = new GroupLayout(contentPane);
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap(18, Short.MAX_VALUE)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(lbl1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+						.addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(lbl2)
+							.addGap(17))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(slider2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.UNRELATED)))
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(slider3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lbl3)))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(slider4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lbl4)))
+					.addGap(15)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(slider5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lbl5)))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(slider6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lbl6)))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addComponent(slider7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(6)
+							.addComponent(lbl7)))
+					.addGap(18)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(lbl8)
+							.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
+							.addComponent(jButton)
+							.addGap(38))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(slider8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+								.addComponent(lblTthreshold)
+								.addComponent(lblTcritical))
+							.addGap(18)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addGap(9))))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(77)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblTthreshold))
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblTcritical)))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(5)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(slider4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(slider3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+							.addPreferredGap(ComponentPlacement.RELATED)))
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+								.addComponent(jButton)
+								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(lbl1)
+									.addComponent(lbl2)
+									.addComponent(lbl4)
+									.addComponent(lbl3))
+								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(lbl8)
+									.addComponent(lbl7)))
+							.addGap(48))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(lbl5)
+								.addComponent(lbl6))
+							.addContainerGap())))
+		);
+		contentPane.setLayout(groupLayout);
 		this.setVisible(true);
 	}
 	
@@ -92,6 +228,38 @@ public class Window extends JFrame {
 				data.add(6, String.valueOf(slider7.getValue()));
 				data.add(7, String.valueOf(slider8.getValue()));
 				new TestOne(data);
+			}
+		});
+		
+		comboBox1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				threshold = (Integer) comboBox1.getSelectedItem();
+				lbl1.setText(String.format("%.1f", (threshold)));
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
+				lbl8.setText(String.format("%.1f", (critical)));
+				comboBox2.removeAllItems();
+				for (int i=(int) comboBox1.getSelectedItem(); i<Tmax; i++){
+					comboBox2.addItem(i);
+				}
+			}
+		});
+		
+		comboBox2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				critical = (Integer) comboBox2.getSelectedItem();
+				lbl1.setText(String.format("%.1f", (threshold)));
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
+				lbl8.setText(String.format("%.1f", (critical)));
 			}
 		});
 	}
