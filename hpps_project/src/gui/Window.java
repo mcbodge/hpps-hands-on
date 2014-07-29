@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,7 +31,6 @@ public class Window extends JFrame {
 	private JButton jButton;
 	private JComboBox<Integer> comboBox1;
 	private JComboBox<Integer> comboBox2;
-	private ArrayList<String> power;
 	private JLabel lblTthreshold;
 	private JLabel lblTcritical;
 	private JLabel lbl1;
@@ -45,6 +43,7 @@ public class Window extends JFrame {
 	private JLabel lbl8;
 	private float threshold;
 	private float critical;
+	private int[] power;
 
 	public Window() {
 		initialize();
@@ -146,15 +145,15 @@ public class Window extends JFrame {
 	private void actions() {
 		jButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				power = new ArrayList<String>();
-				power.add(0, String.valueOf(slider1.getValue()));
-				power.add(1, String.valueOf(slider2.getValue()));
-				power.add(2, String.valueOf(slider3.getValue()));
-				power.add(3, String.valueOf(slider4.getValue()));
-				power.add(4, String.valueOf(slider5.getValue()));
-				power.add(5, String.valueOf(slider6.getValue()));
-				power.add(6, String.valueOf(slider7.getValue()));
-				power.add(7, String.valueOf(slider8.getValue()));
+				power = new int[8];
+				power[0] = slider1.getValue();
+				power[1] = slider2.getValue();
+				power[2] = slider3.getValue();
+				power[3] = slider4.getValue();
+				power[4] = slider5.getValue();
+				power[5] = slider6.getValue();
+				power[6] = slider7.getValue();
+				power[7] = slider8.getValue();
 				DataManager.fileCreator(threshold, critical, power);
 			}
 		});

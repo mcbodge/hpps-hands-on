@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -12,7 +11,7 @@ public class DataManager {
 	
 	private static final int NUM_TEMP_VALUES = 8;
 	
-	public static void fileCreator(float threshold, float critical, ArrayList<String> power){
+	public static void fileCreator(float threshold, float critical, int[] power){
 		String path = System.getProperty("user.dir");
 
 		try {
@@ -25,21 +24,24 @@ public class DataManager {
 			
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.append("; The INI file looks like:\n\n");
-			writer.append("[last_update]\n");
-			writer.append("year=" + calendarData[0] + "\n");
-			writer.append("month=" + calendarData[1] + "\n");
-			writer.append("day=" + calendarData[2] + "\n");
-			writer.append("h=" + calendarData[3] + "\n");
-			writer.append("m=" + calendarData[4] + "\n");
-			writer.append("s=" + calendarData[5] + "\n\n");
-			writer.append("[temperature_values]\n");
-			writer.append("threshold=" + threshold + "\n");
-			writer.append("critical=" + critical + "\n\n");
-			writer.append("[fan_speed]\n");
+			writer.append("[program]\n");
+			
+			writer.append("s=" + "\n\n");
+			writer.append("[temperature]\n");
+			writer.append("t=" + threshold + "\n");
+			writer.append("c=" + critical + "\n\n");			
+			writer.append("[power]\n");
 			for (int i = 0; i < NUM_TEMP_VALUES; i++) {
-				writer.append(String.valueOf(i + 1) + "=" + power.get(i));
+				writer.append(String.valueOf(i + 1) + "=" + power[i]);
 				writer.append("\n");
-			}
+			}			
+			writer.append("\n[version]\n");
+			writer.append("y=" + calendarData[0] + "\n");
+			writer.append("m=" + calendarData[1] + "\n");
+			writer.append("d=" + calendarData[2] + "\n");
+			writer.append("h=" + calendarData[3] + "\n");
+			writer.append("p=" + calendarData[4] + "\n");
+			writer.append("s=" + calendarData[5] + "\n\n");
 			writer.close();
 			
 		} catch (IOException e) {
