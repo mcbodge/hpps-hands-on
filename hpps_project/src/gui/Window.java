@@ -6,17 +6,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComboBox;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JLabel;
+import logic.DataManager;
 
 public class Window extends JFrame {
 	
@@ -35,7 +32,6 @@ public class Window extends JFrame {
 	private JButton jButton;
 	private JComboBox<Integer> comboBox1;
 	private JComboBox<Integer> comboBox2;
-	private GroupLayout groupLayout;
 	private ArrayList<String> power;
 	private JLabel lblTthreshold;
 	private JLabel lblTcritical;
@@ -56,40 +52,61 @@ public class Window extends JFrame {
 	}
 	
 	private void initialize() {
-		setBounds(100, 100, 550, 300);
+		setBounds(100, 100, 900, 600);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		contentPane = new JPanel();
 		slider1 = new JSlider();
+		slider1.setBounds(10, 100, 29, 190);
 		slider1.setOrientation(SwingConstants.VERTICAL);
 		slider2 = new JSlider();
+		slider2.setBounds(60, 100, 29, 190);
 		slider2.setOrientation(SwingConstants.VERTICAL);
 		slider3 = new JSlider();
+		slider3.setBounds(110, 100, 29, 190);
 		slider3.setOrientation(SwingConstants.VERTICAL);
 		slider4 = new JSlider();
+		slider4.setBounds(160, 100, 29, 190);
 		slider4.setOrientation(SwingConstants.VERTICAL);
 		slider5 = new JSlider();
+		slider5.setBounds(210, 100, 29, 190);
 		slider5.setOrientation(SwingConstants.VERTICAL);
 		slider6 = new JSlider();
+		slider6.setBounds(260, 100, 29, 190);
 		slider6.setOrientation(SwingConstants.VERTICAL);
 		slider7 = new JSlider();
+		slider7.setBounds(310, 100, 29, 190);
 		slider7.setOrientation(SwingConstants.VERTICAL);
 		slider8 = new JSlider();
+		slider8.setBounds(360, 100, 29, 190);
 		slider8.setOrientation(SwingConstants.VERTICAL);
 		jButton = new JButton();
+		jButton.setBounds(442, 201, 75, 29);
 		comboBox1 = new JComboBox<Integer>();
+		comboBox1.setBounds(494, 77, 52, 27);
 		comboBox2 = new JComboBox<Integer>();
+		comboBox2.setBounds(494, 110, 52, 27);
 		lblTthreshold = new JLabel("Tthreshold:");
+		lblTthreshold.setBounds(404, 81, 72, 16);
 		lblTcritical = new JLabel("Tcritical:");
+		lblTcritical.setBounds(421, 114, 55, 16);
 		threshold = Tmin;
 		critical = Tmax;
-		lbl1 = new JLabel(String.format("%.1f", (threshold)));
-		lbl2 = new JLabel(String.format("%.1f", (threshold+(critical-threshold)/7)));
-		lbl3 = new JLabel(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
-		lbl4 = new JLabel(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
-		lbl5 = new JLabel(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
-		lbl6 = new JLabel(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
-		lbl7 = new JLabel(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
-		lbl8 = new JLabel(String.format("%.1f", (critical)));
+		lbl1 = new JLabel(String.format("%.1f", (threshold))+" \u00b0C");
+		lbl1.setBounds(6, 290, 60, 16);
+		lbl2 = new JLabel(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
+		lbl2.setBounds(70, 290, 60, 16);
+		lbl3 = new JLabel(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
+		lbl3.setBounds(122, 201, 20, 16);
+		lbl4 = new JLabel(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
+		lbl4.setBounds(169, 201, 28, 16);
+		lbl5 = new JLabel(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
+		lbl5.setBounds(218, 201, 28, 16);
+		lbl6 = new JLabel(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
+		lbl6.setBounds(270, 201, 28, 16);
+		lbl7 = new JLabel(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
+		lbl7.setBounds(317, 201, 28, 16);
+		lbl8 = new JLabel(String.format("%.1f", (critical))+" \u00b0C");
+		lbl8.setBounds(363, 201, 73, 16);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
 		
 		comboBox1.addItem(null);
@@ -101,119 +118,28 @@ public class Window extends JFrame {
 		for(int i=Tmin; i<Tmax; i++){
 			comboBox2.addItem(i);
 		}
-			
-		groupLayout = new GroupLayout(contentPane);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap(18, Short.MAX_VALUE)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lbl1, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-						.addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lbl2)
-							.addGap(17))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(slider2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.UNRELATED)))
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(slider3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lbl3)))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(slider4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lbl4)))
-					.addGap(15)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(slider5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lbl5)))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(slider6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lbl6)))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(slider7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(6)
-							.addComponent(lbl7)))
-					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lbl8)
-							.addPreferredGap(ComponentPlacement.RELATED, 71, Short.MAX_VALUE)
-							.addComponent(jButton)
-							.addGap(38))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(slider8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(lblTthreshold)
-								.addComponent(lblTcritical))
-							.addGap(18)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addGap(9))))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(77)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(comboBox1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblTthreshold))
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(comboBox2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(lblTcritical)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(5)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(slider4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(slider3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-							.addPreferredGap(ComponentPlacement.RELATED)))
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(jButton)
-								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-									.addComponent(lbl1)
-									.addComponent(lbl2)
-									.addComponent(lbl4)
-									.addComponent(lbl3))
-								.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-									.addComponent(lbl8)
-									.addComponent(lbl7)))
-							.addGap(48))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(lbl5)
-								.addComponent(lbl6))
-							.addContainerGap())))
-		);
-		contentPane.setLayout(groupLayout);
+		contentPane.setLayout(null);
+		contentPane.add(lbl1);
+		contentPane.add(slider1);
+		contentPane.add(lbl2);
+		contentPane.add(slider2);
+		contentPane.add(slider3);
+		contentPane.add(lbl3);
+		contentPane.add(slider4);
+		contentPane.add(lbl4);
+		contentPane.add(slider5);
+		contentPane.add(lbl5);
+		contentPane.add(slider6);
+		contentPane.add(lbl6);
+		contentPane.add(slider7);
+		contentPane.add(lbl7);
+		contentPane.add(lbl8);
+		contentPane.add(jButton);
+		contentPane.add(slider8);
+		contentPane.add(lblTthreshold);
+		contentPane.add(lblTcritical);
+		contentPane.add(comboBox2);
+		contentPane.add(comboBox1);
 		this.setVisible(true);
 	}
 	
@@ -229,21 +155,21 @@ public class Window extends JFrame {
 				power.add(5, String.valueOf(slider6.getValue()));
 				power.add(6, String.valueOf(slider7.getValue()));
 				power.add(7, String.valueOf(slider8.getValue()));
-				new TestOne(threshold, critical, power);
+				DataManager.fileCreator(threshold, critical, power);
 			}
 		});
 		
 		comboBox1.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				threshold = (Integer) comboBox1.getSelectedItem();
-				lbl1.setText(String.format("%.1f", (threshold)));
-				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
-				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
-				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
-				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
-				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
-				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
-				lbl8.setText(String.format("%.1f", (critical)));
+				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
+				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
 				if (threshold>critical){
 					comboBox2.removeAllItems();
 					for (int i=(int) comboBox1.getSelectedItem(); i<Tmax; i++){
@@ -259,14 +185,14 @@ public class Window extends JFrame {
 					critical = threshold;
 				else
 					critical = (Integer) comboBox2.getSelectedItem();
-				lbl1.setText(String.format("%.1f", (threshold)));
-				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7)));
-				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7)));
-				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7)));
-				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7)));
-				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7)));
-				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7)));
-				lbl8.setText(String.format("%.1f", (critical)));
+				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
+				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
 			}
 		});
 	}
