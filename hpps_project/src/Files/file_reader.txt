@@ -1,0 +1,277 @@
+#include <SPI.h>
+#include <SD.h>
+
+File myFile;
+
+String myString = "";
+byte program = B111;
+char tempChar = ' ';
+short date[6];
+float temperature[8];
+short power[8];
+
+int led = 13;
+
+
+
+
+void setup()
+{	
+	pinMode(led, OUTPUT);
+	delay(500);
+	Serial.begin(9600);
+	readFile();
+
+	switch (program){
+
+	case B000:
+		userDefined();
+		error("B000");
+		break;
+
+	case B001:
+		industrialFSA(); //TEMP for test
+		powerEfficiency();
+		error("B001");
+		break;
+
+	case B010:
+		coolingEfficiency();
+		error("B010");
+		break;
+
+	case B011:
+		industrialBlanket();
+		error("B011");
+		break;
+
+	case B100:
+		industrialFSA();
+		error("B100");
+		break;
+
+	default:
+		error("main setup switch");
+	}
+
+}
+
+void loop(){
+	error("in the loop");
+}
+
+void readFile(){
+	Serial.print("Initializing SD card...");
+
+	if (!SD.begin()) {
+		error("initialization failed!");
+		return;
+	}
+
+	Serial.println("initialization done.");
+	// open the file for reading:
+
+	myFile = SD.open("psyduck.ini");
+
+	if (myFile) {
+		Serial.println("psyduck.ini:");
+
+		// read from the file until there's nothing else in it:
+		while (myFile.available()) {
+			tempChar = myFile.read();
+			switch (tempChar) {
+			case ';':
+				while (myFile.available() && tempChar != '\n'){
+					tempChar = myFile.read();
+				}
+				break;
+			case '\n': //Line Feed (10)
+				break;
+			case '\r': //Carriage Return (13)
+				break;
+			case '[':
+				tempChar = myFile.read();
+				while (myFile.available() && tempChar != ']'){
+					myString += tempChar;
+					tempChar = myFile.read();
+				}
+				Serial.println(myString);
+				dispatcher(myString);
+				myString = "";
+				break;
+			default:
+				error("INI selector");
+			}
+
+
+		}
+		// close the file:
+		myFile.close();
+
+	}
+	else {
+		// if the file didn't open, print an error:
+		Serial.println("error opening psyduck");
+	}
+}
+
+void dispatcher(String str)
+{
+	float x;
+	float y;
+
+	if (str == "program"){
+		myFile.read(); //Carriage Return (13)
+		myFile.read(); //Line Feed (10)
+		myFile.read(); //s
+		myFile.read(); //=
+		Serial.print("Program dispatched with myString: ");
+		Serial.println(myString);
+		switch (myFile.read()){
+		case '1':
+			program = B000;
+			break;
+		case '2':
+			program = B001;
+			break;
+		case '3':
+			program = B010;
+			break;
+		case '4':
+			program = B011;
+			break;
+		case '5':
+			program = B100;
+			break;
+		default:
+			error("program selector switch");
+		}
+	}
+	else if (str == "temperature"){
+		myString = "";
+		myFile.read(); //Carriage Return (13)
+		myFile.read(); //Line Feed (10)
+		myFile.read(); //t
+		myFile.read(); //=
+		Serial.println(myString);
+		myString = "";
+		tempChar = myFile.read();
+
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+
+		x = myString.toInt();
+
+		Serial.print("threshold: ");
+		Serial.println(x);
+
+		myString = "";
+
+		myFile.read(); //c
+		myFile.read(); //=
+
+		tempChar = myFile.read();
+
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+
+		y = myString.toInt();
+
+		Serial.print("critical: ");
+		Serial.println(y);
+
+		myString = "";
+
+		temperature[0] = x;
+		temperature[1] = x + (y - x + 1) / 8;
+		temperature[2] = x + (y - x + 1) / 4;
+		temperature[3] = x + 3 * (y - x + 1) / 8;
+		temperature[4] = x + (y - x + 1) / 2;
+		temperature[5] = x + 5 * (y - x + 1) / 8;
+		temperature[6] = x + 3 * (y - x + 2) / 4;
+		temperature[7] = y;
+	}
+	else if (str == "power"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		for (short i = 0; i < 8; i++){
+			myFile.read(); //number
+			myFile.read(); //=
+			myString = "";
+			tempChar = myFile.read();
+			while (myFile.available() && tempChar != '\n'){
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+			power[i] = myString.toInt();
+			myString = "";
+			Serial.println(power[i]);
+		}
+	}
+	else if (str == "version"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		for (short i = 0; i < 6; i++){
+			myFile.read(); //number
+			myFile.read(); //=
+			myString = "";
+			tempChar = myFile.read();
+			while (myFile.available() && tempChar != '\n'){
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+			date[i] = myString.toInt();
+			myString = "";
+			Serial.println(date[i]);
+		}
+	}
+
+}
+
+void userDefined() //B000
+{
+	while (1){
+
+	}
+}
+
+void powerEfficiency() //B001
+{
+	while (1){
+
+	}
+}
+
+void coolingEfficiency() //B010
+{
+	while (1){
+
+	}
+}
+
+void industrialBlanket() //B011
+{
+	while (1){
+
+	}
+}
+
+void industrialFSA() //B100
+{
+	while (true){
+		digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+		delay(500);               // wait for a second
+		digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+		delay(500);               // wait for a second
+	}
+}
+
+void error(String e) //DEFAULT
+{
+	Serial.print("\nERROR from:  ");
+	Serial.println(e);
+}
