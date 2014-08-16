@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
@@ -22,7 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import logic.DataManager;
-
+//TODO sistemare controlli su combobox
 public class Window extends JFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
@@ -43,6 +41,7 @@ public class Window extends JFrame implements ActionListener {
 					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8;
 	private JTextArea description2, description3;
 	private float threshold, critical;
+	private int target;
 	private int[] power;
 
 	public Window() {
@@ -103,7 +102,12 @@ public class Window extends JFrame implements ActionListener {
 		slider7.setOrientation(SwingConstants.VERTICAL);
 		slider8 = new JSlider();
 		slider8.setOrientation(SwingConstants.VERTICAL);
-		jButton1 = new JButton();
+		jButton1 = new JButton("Submit");
+		jButton1.setEnabled(false);
+		jButton2 = new JButton("Submit");
+		jButton2.setEnabled(false);
+		jButton3 = new JButton("Submit");
+		jButton3.setEnabled(false);
 		comboThreshold1 = new JComboBox<Integer>();
 		comboCritical1 = new JComboBox<Integer>();
 		comboThreshold2 = new JComboBox<Integer>();
@@ -207,9 +211,67 @@ public class Window extends JFrame implements ActionListener {
 				.addComponent(jButton1)
 		);
 		
-		/*layout2.setHorizontalGroup(layout2.createSequentialGroup()
-				
-		);*/
+		layout2.setHorizontalGroup(layout2.createSequentialGroup()
+				.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addGroup(layout2.createSequentialGroup()
+								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(lblThreshold2)
+										.addComponent(lblTarget2)
+										.addComponent(lblCritical2))
+								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(comboThreshold2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboTarget2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboCritical2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)))
+						.addComponent(description2)
+						.addComponent(jButton2))
+		);
+		layout2.setVerticalGroup(layout2.createSequentialGroup()
+				.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblThreshold2)
+						.addComponent(comboThreshold2))
+				.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblTarget2)
+						.addComponent(comboTarget2))
+				.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblCritical2)
+						.addComponent(comboCritical2))
+				.addComponent(description2)
+				.addComponent(jButton2)
+		);
+		
+		layout3.setHorizontalGroup(layout3.createSequentialGroup()
+				.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addGroup(layout3.createSequentialGroup()
+								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(lblThreshold3)
+										.addComponent(lblTarget3)
+										.addComponent(lblCritical3))
+								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(comboThreshold3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboTarget3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboCritical3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)))
+						.addComponent(description3)
+						.addComponent(jButton3))
+		);
+		layout3.setVerticalGroup(layout3.createSequentialGroup()
+				.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblThreshold3)
+						.addComponent(comboThreshold3))
+				.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblTarget3)
+						.addComponent(comboTarget3))
+				.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.BASELINE)
+						.addComponent(lblCritical3)
+						.addComponent(comboCritical3))
+				.addComponent(description3)
+				.addComponent(jButton3)
+		);
 		
 		getContentPane().add(menuBar, BorderLayout.NORTH);
 		getContentPane().add(contentPane, BorderLayout.CENTER);
@@ -257,12 +319,21 @@ public class Window extends JFrame implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		if (e.getSource()==rbMenuItem1)
+		if (e.getSource()==rbMenuItem1) {
+			threshold = Tmin;
+			critical = Tmax;
 			cardLayout.show(contentPane, "first");
-		else if (e.getSource()==rbMenuItem2)
+		}
+		else if (e.getSource()==rbMenuItem2) {
+			threshold = Tmin;
+			critical = Tmax;
 	        cardLayout.show(contentPane, "second");
-		else if (e.getSource()==rbMenuItem3) 
+		}
+		else if (e.getSource()==rbMenuItem3) {
+			threshold = Tmin;
+			critical = Tmax;
 	        cardLayout.show(contentPane, "third");
+		}
 		else if (e.getSource()==jButton1) {
 			power = new int[8];
 			power[0] = slider1.getValue();
@@ -273,7 +344,186 @@ public class Window extends JFrame implements ActionListener {
 			power[5] = slider6.getValue();
 			power[6] = slider7.getValue();
 			power[7] = slider8.getValue();
-			DataManager.fileCreator(threshold, critical, power);
+			DataManager.fileCreator(1, threshold, critical, power);
+		} else if (e.getSource()==jButton2) {
+			power = new int[8];
+			for (int i=0; i<8; i++) {
+				power[i] = 100;
+			}
+			DataManager.fileCreator(2, threshold, critical, power);
+		} else if (e.getSource()==jButton3) {
+			power = new int[8];
+			for (int i=0; i<8; i++) {
+				power[i] = 100;
+			}
+			DataManager.fileCreator(3, threshold, critical, power);
+		} else if (e.getSource()==comboThreshold1) {
+			if (comboThreshold1.getSelectedItem()!=null) {
+				comboCritical1.setEnabled(true);
+				threshold = (Integer) comboThreshold1.getSelectedItem();
+				if (comboCritical1.getSelectedItem()==null || threshold > (int) comboCritical1.getSelectedItem()) {
+					comboCritical1.removeAllItems();
+					for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
+						comboCritical1.addItem(i);
+					}
+				} else if (threshold > (int) comboCritical1.getItemAt(0)){
+					int i = 0;
+					while (threshold > comboCritical1.getItemAt(i)) {
+						comboCritical1.removeItemAt(i);
+					}
+				} else if (threshold < (int) comboCritical1.getItemAt(0)) {
+					int selection = (int) comboCritical1.getSelectedItem();
+					comboCritical1.removeAllItems();
+					for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
+						comboCritical1.addItem(i);
+					}
+					comboCritical1.setSelectedItem(selection);
+				}
+				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
+				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
+			} else {
+				jButton1.setEnabled(false);
+				comboCritical1.removeAllItems();
+				comboCritical1.addItem(null);
+				comboCritical1.setEnabled(false);
+			}
+		} else if (e.getSource()==comboCritical1) {
+			if (comboCritical1.getSelectedItem()!=null) {
+				critical = (Integer) comboCritical1.getSelectedItem();
+				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
+				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
+				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
+				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
+				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
+				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
+				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
+				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
+				jButton1.setEnabled(true);
+			}
+		} else if (e.getSource()==comboThreshold2) {
+			if (comboThreshold2.getSelectedItem()!=null) {
+				comboTarget2.setEnabled(true);
+				comboCritical2.setEnabled(true);
+				threshold = (Integer) comboThreshold2.getSelectedItem();
+				if (comboTarget2.getSelectedItem()==null || threshold > (int) comboTarget2.getSelectedItem()) {
+					comboTarget2.removeAllItems();
+					for (int i=(int) comboThreshold2.getSelectedItem(); i<Tmax; i++){
+						comboTarget2.addItem(i);
+					}
+				} else if (threshold > (int) comboTarget2.getItemAt(0)){
+					int i = 0;
+					while (threshold > comboTarget2.getItemAt(i)) {
+						comboTarget2.removeItemAt(i);
+					}
+				} else if (threshold < (int) comboTarget2.getItemAt(0)) {
+					int selection = (int) comboTarget2.getSelectedItem();
+					comboTarget2.removeAllItems();
+					for (int i=(int) comboThreshold2.getSelectedItem(); i<Tmax; i++){
+						comboTarget2.addItem(i);
+					}
+					comboTarget2.setSelectedItem(selection);
+				}
+			} else {
+				jButton2.setEnabled(false);
+				comboCritical2.removeAllItems();
+				comboCritical2.addItem(null);
+				comboCritical2.setEnabled(false);
+				comboTarget2.removeAllItems();
+				comboTarget2.addItem(null);
+				comboTarget2.setEnabled(false);
+			}
+		} else if (e.getSource()==comboTarget2) {
+			if (comboTarget2.getSelectedItem()!=null) {
+				target = (int) comboTarget2.getSelectedItem();
+				if (comboCritical2.getSelectedItem()==null || target > (int) comboCritical2.getSelectedItem()) {
+					comboCritical2.removeAllItems();
+					for (int i=(int) comboTarget2.getSelectedItem(); i<Tmax; i++){
+						comboCritical2.addItem(i);
+					}
+				} else if (target > (int) comboCritical2.getItemAt(0)){
+					int i = 0;
+					while (target > comboCritical2.getItemAt(i)) {
+						comboCritical2.removeItemAt(i);
+					}
+				} else if (target < (int) comboCritical2.getItemAt(0)) {
+					int selection = (int) comboCritical2.getSelectedItem();
+					comboCritical2.removeAllItems();
+					for (int i=(int) comboTarget2.getSelectedItem(); i<Tmax; i++){
+						comboCritical2.addItem(i);
+					}
+					comboCritical2.setSelectedItem(selection);
+				}
+			}
+		} else if (e.getSource()==comboCritical2) {
+			if (comboCritical2.getSelectedItem()!=null) {
+				critical = (Integer) comboCritical2.getSelectedItem();
+				jButton2.setEnabled(true);
+			}
+		} else if (e.getSource()==comboThreshold3) {
+			if (comboThreshold3.getSelectedItem()!=null) {
+				comboTarget3.setEnabled(true);
+				comboCritical3.setEnabled(true);
+				threshold = (Integer) comboThreshold3.getSelectedItem();
+				if (comboTarget3.getSelectedItem()==null || threshold > (int) comboTarget3.getSelectedItem()) {
+					comboTarget3.removeAllItems();
+					for (int i=(int) comboThreshold3.getSelectedItem(); i<Tmax; i++){
+						comboTarget3.addItem(i);
+					}
+				} else if (threshold > (int) comboTarget3.getItemAt(0)){
+					int i = 0;
+					while (threshold > comboTarget3.getItemAt(i)) {
+						comboTarget3.removeItemAt(i);
+					}
+				} else if (threshold < (int) comboTarget3.getItemAt(0)) {
+					int selection = (int) comboTarget3.getSelectedItem();
+					comboTarget3.removeAllItems();
+					for (int i=(int) comboThreshold3.getSelectedItem(); i<Tmax; i++){
+						comboTarget3.addItem(i);
+					}
+					comboTarget3.setSelectedItem(selection);
+				}
+			} else {
+				jButton3.setEnabled(false);
+				comboCritical3.removeAllItems();
+				comboCritical3.addItem(null);
+				comboCritical3.setEnabled(false);
+				comboTarget3.removeAllItems();
+				comboTarget3.addItem(null);
+				comboTarget3.setEnabled(false);
+			}
+		} else if (e.getSource()==comboTarget3) {
+			if (comboTarget3.getSelectedItem()!=null) {
+				target = (int) comboTarget3.getSelectedItem();
+				if (comboCritical3.getSelectedItem()==null || target > (int) comboCritical3.getSelectedItem()) {
+					comboCritical3.removeAllItems();
+					for (int i=(int) comboTarget3.getSelectedItem(); i<Tmax; i++){
+						comboCritical3.addItem(i);
+					}
+				} else if (target > (int) comboCritical3.getItemAt(0)){
+					int i = 0;
+					while (target > comboCritical3.getItemAt(i)) {
+						comboCritical3.removeItemAt(i);
+					}
+				} else if (target < (int) comboCritical3.getItemAt(0)) {
+					int selection = (int) comboCritical3.getSelectedItem();
+					comboCritical3.removeAllItems();
+					for (int i=(int) comboTarget3.getSelectedItem(); i<Tmax; i++){
+						comboCritical3.addItem(i);
+					}
+					comboCritical3.setSelectedItem(selection);
+				}
+			}
+		} else if (e.getSource()==comboCritical3) {
+			if (comboCritical3.getSelectedItem()!=null) {
+				critical = (Integer) comboCritical3.getSelectedItem();
+				jButton3.setEnabled(true);
+			}
 		}
 	}
 	
@@ -282,42 +532,15 @@ public class Window extends JFrame implements ActionListener {
 		rbMenuItem2.addActionListener(this);
 		rbMenuItem3.addActionListener(this);	
 		jButton1.addActionListener(this);
-		
-		comboThreshold1.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				threshold = (Integer) comboThreshold1.getSelectedItem();
-				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
-				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
-				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
-				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
-				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
-				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
-				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
-				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
-				if (threshold>critical){
-					comboCritical1.removeAllItems();
-					for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
-						comboCritical1.addItem(i);
-					}
-				}
-			}
-		});
-		
-		comboCritical1.addItemListener(new ItemListener() {
-			public void itemStateChanged(ItemEvent e) {
-				if (comboCritical1.getSelectedItem()==null)
-					critical = threshold;
-				else
-					critical = (Integer) comboCritical1.getSelectedItem();
-				lbl1.setText(String.format("%.1f", (threshold))+" \u00b0C");
-				lbl2.setText(String.format("%.1f", (threshold+(critical-threshold)/7))+" \u00b0C");
-				lbl3.setText(String.format("%.1f", (threshold+2*(critical-threshold)/7))+" \u00b0C");
-				lbl4.setText(String.format("%.1f", (threshold+3*(critical-threshold)/7))+" \u00b0C");
-				lbl5.setText(String.format("%.1f", (threshold+4*(critical-threshold)/7))+" \u00b0C");
-				lbl6.setText(String.format("%.1f", (threshold+5*(critical-threshold)/7))+" \u00b0C");
-				lbl7.setText(String.format("%.1f", (threshold+6*(critical-threshold)/7))+" \u00b0C");
-				lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
-			}
-		});
+		comboThreshold1.addActionListener(this);
+		comboCritical1.addActionListener(this);
+		jButton2.addActionListener(this);
+		comboThreshold2.addActionListener(this);
+		comboTarget2.addActionListener(this);
+		comboCritical2.addActionListener(this);
+		jButton3.addActionListener(this);
+		comboThreshold3.addActionListener(this);
+		comboTarget3.addActionListener(this);
+		comboCritical3.addActionListener(this);
 	}
 }

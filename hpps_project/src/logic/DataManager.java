@@ -11,7 +11,7 @@ public class DataManager {
 	
 	private static final int NUM_TEMP_VALUES = 8;
 	
-	public static void fileCreator(float threshold, float critical, int[] power){
+	public static void fileCreator(int program, float threshold, float critical, int[] power){
 		String path = System.getProperty("user.dir");
 
 		try {
@@ -25,8 +25,7 @@ public class DataManager {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 			writer.append("; The INI file looks like:\n\n");
 			writer.append("[program]\n");
-			
-			writer.append("s=" + "\n\n");
+			writer.append("s=" + program + "\n\n");
 			writer.append("[temperature]\n");
 			writer.append("t=" + threshold + "\n");
 			writer.append("c=" + critical + "\n\n");			
