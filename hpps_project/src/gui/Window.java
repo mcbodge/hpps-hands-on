@@ -20,7 +20,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import logic.DataManager;
-//TODO sistemare controlli su combobox
+//TODO quando cambio programma, devo azzerare le combobox etc.; controlli sugli sliders; 2nd e 3rd menu; passaggio ulteriori dati su file.
 public class Window extends JFrame implements ActionListener {
 	
 	private static final long serialVersionUID = 1L;
@@ -30,7 +30,7 @@ public class Window extends JFrame implements ActionListener {
 	private CardLayout cardLayout;
 	private GroupLayout layout1, layout2, layout3;
 	private JMenuBar menuBar;
-	private JMenu menu;
+	private JMenu menu, submenu;
 	private JRadioButtonMenuItem rbMenuItem1, rbMenuItem2, rbMenuItem3;
 	private ButtonGroup group;
 	private JSlider slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8;
@@ -85,6 +85,14 @@ public class Window extends JFrame implements ActionListener {
 		group.add(rbMenuItem3);
 		menu.add(rbMenuItem3);
 		menuBar = new JMenuBar();
+		menuBar.add(menu);
+		menu = new JMenu("Emergency");
+		submenu = new JMenu("What to do?");
+		menu.add(submenu);
+		menuBar.add(menu);
+		menu = new JMenu("Advanced");
+		submenu = new JMenu("Set Delay");
+		menu.add(submenu);
 		menuBar.add(menu);
 		slider1 = new JSlider();
 		slider1.setOrientation(SwingConstants.VERTICAL);
@@ -282,9 +290,7 @@ public class Window extends JFrame implements ActionListener {
 		}
 		
 		comboCritical1.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
-			comboCritical1.addItem(i);
-		}
+		comboCritical1.setEnabled(false);
 		
 		comboThreshold2.addItem(null);
 		for(int i=Tmin; i<Tmax; i++){
@@ -292,29 +298,22 @@ public class Window extends JFrame implements ActionListener {
 		}
 		
 		comboTarget2.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
-			comboTarget2.addItem(i);
-		}
+		comboTarget2.setEnabled(false);
 		
 		comboCritical2.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
-			comboCritical2.addItem(i);
-		}
-		
+		comboCritical2.setEnabled(false);
+	
 		comboThreshold3.addItem(null);
 		for(int i=Tmin; i<Tmax; i++){
 			comboThreshold3.addItem(i);
 		}
 		
 		comboTarget3.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
-			comboTarget3.addItem(i);
-		}
+		comboTarget3.setEnabled(false);
 		
 		comboCritical3.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
-			comboCritical3.addItem(i);
-		}
+		comboCritical3.setEnabled(false);
+
 		setVisible(true);
 	}
 	
