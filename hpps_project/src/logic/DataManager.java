@@ -11,7 +11,7 @@ public class DataManager {
 	
 	private static final int NUM_TEMP_VALUES = 8;
 	
-	public static void fileCreator(int program, float threshold, float critical, int[] power){
+	public static void fileCreator(int program, float threshold, int target, float critical, int[] power){
 		String path = System.getProperty("user.dir");
 
 		try {
@@ -28,6 +28,7 @@ public class DataManager {
 			writer.append("s=" + program + "\n\n");
 			writer.append("[temperature]\n");
 			writer.append("t=" + threshold + "\n");
+			writer.append("x=" + target + "\n");
 			writer.append("c=" + critical + "\n\n");			
 			writer.append("[power]\n");
 			for (int i = 0; i < NUM_TEMP_VALUES; i++) {
