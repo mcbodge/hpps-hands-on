@@ -15,13 +15,12 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 
 import logic.DataManager;
-//TODO quando cambio programma, devo azzerare le combobox etc.; controlli sugli sliders (todo???); 2nd e 3rd menu; passaggio ulteriori dati su file.
-//to Manuel: controllo gli sliders? nel primo programma che target passo su file?
+//TODO quando cambio programma, perfezionare controlli sugli rbmenuitem; controlli sugli sliders (todo???); sistemare sliders con labels e display valore corrente; passaggio ulteriori dati su file.
+//to Manuel: controllo gli sliders? nel primo programma che target passo su file? cambiamenti nel file
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
@@ -32,9 +31,9 @@ public class Window extends JFrame {
 	private GroupLayout layout1, layout2, layout3;
 	private JMenuBar menuBar;
 	private JMenu menu, submenu;
-	private JRadioButtonMenuItem rbMenuItem1, rbMenuItem2, rbMenuItem3;
+	private JRadioButtonMenuItem rbMenuItem1, rbMenuItem2, rbMenuItem3, em1, em2, em3;
 	private ButtonGroup group;
-	private JSlider slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8;
+	private JSlider slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8, delaySlider;
 	private JButton jButton1, jButton2, jButton3;
 	private JComboBox<Integer> comboThreshold1, comboCritical1, comboThreshold2, comboTarget2, comboCritical2, 
 								comboThreshold3, comboTarget3, comboCritical3;
@@ -42,7 +41,7 @@ public class Window extends JFrame {
 					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8;
 	private JTextArea description2, description3;
 	private float threshold, critical;
-	private int target;
+	private int target, delay;
 	private int[] power;
 
 	public Window() {
@@ -75,8 +74,7 @@ public class Window extends JFrame {
 		panel3.setLayout(layout3);
 		group = new ButtonGroup();
 		menu = new JMenu("Program");
-		rbMenuItem1 = new JRadioButtonMenuItem("User Defined");
-		rbMenuItem1.setSelected(true);
+		rbMenuItem1 = new JRadioButtonMenuItem("User Defined", true);
 		group.add(rbMenuItem1);
 		menu.add(rbMenuItem1);
 		rbMenuItem2 = new JRadioButtonMenuItem("Power Efficiency");
@@ -89,28 +87,28 @@ public class Window extends JFrame {
 		menuBar.add(menu);
 		menu = new JMenu("Emergency");
 		submenu = new JMenu("What to do?");
+		em1 = new JRadioButtonMenuItem("Alarm");
+		submenu.add(em1);
+		em2 = new JRadioButtonMenuItem("Maximum power");
+		submenu.add(em2);
+		em3 = new JRadioButtonMenuItem("Switching off");
+		submenu.add(em3);
 		menu.add(submenu);
 		menuBar.add(menu);
 		menu = new JMenu("Advanced");
 		submenu = new JMenu("Set Delay");
+		delaySlider = new JSlider(1, 60);
+		submenu.add(delaySlider);
 		menu.add(submenu);
 		menuBar.add(menu);
-		slider1 = new JSlider();
-		slider1.setOrientation(SwingConstants.VERTICAL);
-		slider2 = new JSlider();
-		slider2.setOrientation(SwingConstants.VERTICAL);
-		slider3 = new JSlider();
-		slider3.setOrientation(SwingConstants.VERTICAL);
-		slider4 = new JSlider();
-		slider4.setOrientation(SwingConstants.VERTICAL);
-		slider5 = new JSlider();
-		slider5.setOrientation(SwingConstants.VERTICAL);
-		slider6 = new JSlider();
-		slider6.setOrientation(SwingConstants.VERTICAL);
-		slider7 = new JSlider();
-		slider7.setOrientation(SwingConstants.VERTICAL);
-		slider8 = new JSlider();
-		slider8.setOrientation(SwingConstants.VERTICAL);
+		slider1 = new JSlider(JSlider.VERTICAL);
+		slider2 = new JSlider(JSlider.VERTICAL);
+		slider3 = new JSlider(JSlider.VERTICAL);
+		slider4 = new JSlider(JSlider.VERTICAL);
+		slider5 = new JSlider(JSlider.VERTICAL);
+		slider6 = new JSlider(JSlider.VERTICAL);
+		slider7 = new JSlider(JSlider.VERTICAL);
+		slider8 = new JSlider(JSlider.VERTICAL);
 		jButton1 = new JButton("Submit");
 		jButton1.setEnabled(false);
 		jButton2 = new JButton("Submit");
@@ -354,7 +352,8 @@ public class Window extends JFrame {
 				power[5] = slider6.getValue();
 				power[6] = slider7.getValue();
 				power[7] = slider8.getValue();
-				DataManager.fileCreator(1, threshold, target, critical, power);
+				delay = delaySlider.getValue();
+				DataManager.fileCreator(1, delay, threshold, target, critical, power);
 			}
 		});
 		
@@ -421,7 +420,8 @@ public class Window extends JFrame {
 				for (int i=0; i<8; i++) {
 					power[i] = 100;
 				}
-				DataManager.fileCreator(2, threshold, target, critical, power);
+				delay = delaySlider.getValue();
+				DataManager.fileCreator(2, delay, threshold, target, critical, power);
 			}
 		});
 		
@@ -502,7 +502,8 @@ public class Window extends JFrame {
 				for (int i=0; i<8; i++) {
 					power[i] = 100;
 				}
-				DataManager.fileCreator(3, threshold, target, critical, power);
+				delay = delaySlider.getValue();
+				DataManager.fileCreator(3, delay, threshold, target, critical, power);
 			}
 		});
 		
