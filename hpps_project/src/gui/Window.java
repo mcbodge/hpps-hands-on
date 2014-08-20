@@ -17,10 +17,14 @@ import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import logic.DataManager;
-//TODO quando cambio programma, perfezionare controlli sugli rbmenuitem; controlli sugli sliders (todo???); sistemare sliders con labels e display valore corrente; passaggio ulteriori dati su file.
-//to Manuel: controllo gli sliders? nel primo programma che target passo su file? cambiamenti nel file
+//TODO ottimizzazione codice (soprattutto actions); regolare larghezza elementi primo pannello per evitare "movimenti"; 
+//quando cambio programma, perfezionare controlli sugli rbmenuitem; controlli sugli sliders (todo???); passaggio ulteriori dati su file.
+//to Manuel: controllo gli sliders? nel primo programma che target passo su file? cambiamenti nel file; tipo di slider??
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
@@ -40,6 +44,7 @@ public class Window extends JFrame {
 	private JLabel lblThreshold1, lblCritical1, lblThreshold2, lblTarget2, lblCritical2, lblThreshold3, lblTarget3, lblCritical3, 
 					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8;
 	private JTextArea description2, description3;
+	private JTextField field1, field2, field3, field4, field5, field6, field7, field8;
 	private float threshold, critical;
 	private int target, delay;
 	private int[] power;
@@ -102,13 +107,25 @@ public class Window extends JFrame {
 		menu.add(submenu);
 		menuBar.add(menu);
 		slider1 = new JSlider(JSlider.VERTICAL);
+		slider1.setMinorTickSpacing(5);
+		slider1.setMajorTickSpacing(20);
+		slider1.setPaintTicks(true);
+		slider1.setPaintLabels(true);
+		field1 = new JTextField(""+slider1.getValue());
 		slider2 = new JSlider(JSlider.VERTICAL);
+		field2 = new JTextField(""+slider2.getValue());
 		slider3 = new JSlider(JSlider.VERTICAL);
+		field3 = new JTextField(""+slider3.getValue());
 		slider4 = new JSlider(JSlider.VERTICAL);
+		field4 = new JTextField(""+slider4.getValue());
 		slider5 = new JSlider(JSlider.VERTICAL);
+		field5 = new JTextField(""+slider5.getValue());
 		slider6 = new JSlider(JSlider.VERTICAL);
+		field6 = new JTextField(""+slider6.getValue());
 		slider7 = new JSlider(JSlider.VERTICAL);
+		field7 = new JTextField(""+slider7.getValue());
 		slider8 = new JSlider(JSlider.VERTICAL);
+		field8 = new JTextField(""+slider8.getValue());
 		jButton1 = new JButton("Submit");
 		jButton1.setEnabled(false);
 		jButton2 = new JButton("Submit");
@@ -157,27 +174,35 @@ public class Window extends JFrame {
 										          GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout1.createSequentialGroup()
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field1)
 										.addComponent(slider1)
 										.addComponent(lbl1))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field2)
 										.addComponent(slider2)
 										.addComponent(lbl2))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field3)
 										.addComponent(slider3)
 										.addComponent(lbl3))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field4)
 										.addComponent(slider4)
 										.addComponent(lbl4))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field5)
 										.addComponent(slider5)
 										.addComponent(lbl5))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field6)
 										.addComponent(slider6)
 										.addComponent(lbl6))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field7)
 										.addComponent(slider7)
 										.addComponent(lbl7))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(field8)
 										.addComponent(slider8)
 										.addComponent(lbl8)))
 						.addComponent(jButton1))
@@ -189,6 +214,23 @@ public class Window extends JFrame {
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.BASELINE)
 						.addComponent(lblCritical1)
 						.addComponent(comboCritical1))
+				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(field1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field4, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field5, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field6, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field7, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE)
+						.addComponent(field8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+						          GroupLayout.PREFERRED_SIZE))
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(slider1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 						          GroupLayout.PREFERRED_SIZE)
@@ -411,6 +453,54 @@ public class Window extends JFrame {
 					lbl8.setText(String.format("%.1f", (critical))+" \u00b0C");
 					jButton1.setEnabled(true);
 				}
+			}
+		});
+		
+		slider1.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field1.setText(""+slider1.getValue());
+			}
+		});
+		
+		slider2.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field2.setText(""+slider2.getValue());
+			}
+		});
+
+		slider3.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field3.setText(""+slider3.getValue());
+			}
+		});
+		
+		slider4.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field4.setText(""+slider4.getValue());
+			}
+		});
+		
+		slider5.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field5.setText(""+slider5.getValue());
+			}
+		});
+		
+		slider6.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field6.setText(""+slider6.getValue());
+			}
+		});
+		
+		slider7.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field7.setText(""+slider7.getValue());
+			}
+		});
+		
+		slider8.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				field8.setText(""+slider8.getValue());
 			}
 		});
 		
