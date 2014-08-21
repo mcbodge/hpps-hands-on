@@ -23,8 +23,8 @@ import javax.swing.event.ChangeListener;
 
 import logic.DataManager;
 //TODO ottimizzazione codice (soprattutto actions); regolare larghezza elementi primo pannello per evitare "movimenti"; 
-//quando cambio programma, perfezionare controlli sugli rbmenuitem; controlli sugli sliders (todo???); passaggio ulteriori dati su file.
-//to Manuel: controllo gli sliders? nel primo programma che target passo su file? cambiamenti nel file; tipo di slider??
+//quando cambio programma, perfezionare controlli sugli rbmenuitem; controlli sugli sliders; passaggio ulteriori dati su file.
+//controllo sugli sliders; textfield->label; aggiungere minPower e maxPower sui pannelli 2 e 3; nel primo programma che target passo su file? ->0; cambiamenti nel file; tipo di slider? -> uguale al primo.
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
