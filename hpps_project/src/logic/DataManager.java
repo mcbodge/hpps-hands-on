@@ -11,7 +11,7 @@ public class DataManager {
 	
 	private static final int NUM_TEMP_VALUES = 8;
 	
-	public static void fileCreator(int program, int delay, float threshold, int target, float critical, int[] power){
+	public static void fileCreator(int program, int emergency, int delay, int[] temperature, int target, int[] power){
 		String path = System.getProperty("user.dir");
 
 		try {
@@ -26,12 +26,16 @@ public class DataManager {
 			writer.append("; The INI file looks like:\n\n");
 			writer.append("[program]\n");
 			writer.append("s=" + program + "\n\n");
+			writer.append("[emergency]\n");
+			writer.append("e=" + emergency + "\n\n");
 			writer.append("[delay]\n");
 			writer.append("d=" + delay + "\n\n");
 			writer.append("[temperature]\n");
-			writer.append("t=" + threshold + "\n");
-			writer.append("x=" + target + "\n");
-			writer.append("c=" + critical + "\n\n");			
+			for (int i = 0; i < NUM_TEMP_VALUES; i++) {
+				writer.append(String.valueOf(i + 1) + "=" + temperature[i]);
+				writer.append("\n");
+			}			
+			writer.append("t=" + target + "\n\n");
 			writer.append("[power]\n");
 			for (int i = 0; i < NUM_TEMP_VALUES; i++) {
 				writer.append(String.valueOf(i + 1) + "=" + power[i]);
