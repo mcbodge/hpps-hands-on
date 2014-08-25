@@ -23,7 +23,7 @@ import javax.swing.event.ChangeListener;
 import logic.DataManager;
 //TODO ottimizzazione codice (soprattutto actions) e layout; intervalli sulle lbl non sono (quasi) mai uguali;
 //quando cambio programma, perfezionare controlli sugli rbmenuitem;
-//aggiungere minPower e maxPower sui pannelli 2 e 3; sistemare sliderDelay (impaginazione)(intervallo valori??);
+//sistemare sliderDelay (impaginazione)(intervallo valori??); default->operare sui buttons
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
@@ -47,7 +47,7 @@ public class Window extends JFrame {
 					field1, field2, field3, field4, field5, field6, field7, field8, valMinPow2, valMaxPow2, valMinPow3, valMaxPow3;
 	private JTextArea description2, description3;
 	private float threshold, critical;
-	private int emergency, delay, target, minPower, maxPower;
+	private int emergency, delay, target;
 	private int[] temperature, power;
 
 	public Window() {
@@ -649,10 +649,11 @@ public class Window extends JFrame {
 		
 		jButton2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i=0; i<NUM_TEMP_VALUES; i++) {
-					power[i] = 100;
+				power[0] = minPow2.getValue();
+				power[1] = maxPow2.getValue();
+				for (int i=2; i<NUM_TEMP_VALUES; i++) {
+					power[i] = power[1];
 				}
-				delay = sliderDelay.getValue();
 				DataManager.fileCreator(2, emergency, 4000, temperature, target, power);
 			}
 		});
@@ -748,10 +749,11 @@ public class Window extends JFrame {
 		
 		jButton3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				for (int i=0; i<NUM_TEMP_VALUES; i++) {
-					power[i] = 100;
+				power[0] = minPow3.getValue();
+				power[1] = maxPow3.getValue();
+				for (int i=2; i<NUM_TEMP_VALUES; i++) {
+					power[i] = power[1];
 				}
-				delay = sliderDelay.getValue();
 				DataManager.fileCreator(3, emergency, 4000, temperature, target, power);
 			}
 		});
