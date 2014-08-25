@@ -21,9 +21,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import logic.DataManager;
-//TODO ottimizzazione codice (soprattutto actions) e layout; intervalli sulle lbl non sono (quasi) mai uguali;
+//TODO ottimizzazione codice (soprattutto actions) e layout; intervalli sulle lbl non sono (quasi) mai uguali->visualizzare float, passare int;
 //quando cambio programma, perfezionare controlli sugli rbmenuitem;
-//sistemare sliderDelay (impaginazione)(intervallo valori??); default->operare sui buttons
+//sistemare comboDelay (impaginazione); default->operare sui buttons
 public class Window extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
@@ -37,10 +37,10 @@ public class Window extends JFrame {
 	private JMenu menu, submenu;
 	private JRadioButtonMenuItem rbMenuItem1, rbMenuItem2, rbMenuItem3, em1, em2, em3;
 	private ButtonGroup group;
-	private JSlider slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8, sliderDelay, 
+	private JSlider slider1, slider2, slider3, slider4, slider5, slider6, slider7, slider8, 
 					minPow2, maxPow2, minPow3, maxPow3;
 	private JButton jButton1, jButton2, jButton3;
-	private JComboBox<Integer> comboThreshold1, comboCritical1, comboThreshold2, comboTarget2, comboCritical2, 
+	private JComboBox<Integer> comboThreshold1, comboCritical1, comboDelay, comboThreshold2, comboTarget2, comboCritical2, 
 								comboThreshold3, comboTarget3, comboCritical3;
 	private JLabel lblThreshold1, lblCritical1, lblThreshold2, lblTarget2, lblCritical2, lblThreshold3, lblTarget3, lblCritical3, 
 					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8, lblDelay, lblMinPow2, lblMaxPow2, lblMinPow3, lblMaxPow3,
@@ -102,8 +102,13 @@ public class Window extends JFrame {
 		submenu.add(em3);
 		menu.add(submenu);
 		menuBar.add(menu);
-		lblDelay = new JLabel("Delay:");
-		sliderDelay = new JSlider(1, 60);
+		lblDelay = new JLabel("Delay(ms) :");
+		comboDelay = new JComboBox<Integer>();
+		for (int item=500; item<10000; item=item+500)
+			comboDelay.addItem(item);
+		for (int item=10000; item<31000; item=item+1000)
+			comboDelay.addItem(item);
+		comboDelay.setSelectedItem(4000);
 		slider1 = new JSlider(JSlider.VERTICAL);;
 		slider1.setMinorTickSpacing(5);
 		slider1.setMajorTickSpacing(20);
@@ -232,7 +237,7 @@ public class Window extends JFrame {
 										.addComponent(comboCritical1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE))
 								.addComponent(lblDelay)
-								.addComponent(sliderDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								.addComponent(comboDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 								          GroupLayout.PREFERRED_SIZE))
 						.addGroup(layout1.createSequentialGroup()
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
@@ -280,7 +285,7 @@ public class Window extends JFrame {
 										.addComponent(comboCritical1)))
 						.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
 								.addComponent(lblDelay)
-								.addComponent(sliderDelay)))
+								.addComponent(comboDelay)))
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addComponent(field1)
 						.addComponent(field2)
@@ -496,7 +501,14 @@ public class Window extends JFrame {
 				power[5] = slider6.getValue();
 				power[6] = slider7.getValue();
 				power[7] = slider8.getValue();
-				delay = sliderDelay.getValue();
+				delay = (int) comboDelay.getSelectedItem();
+				if (!em2.isSelected()&&!em3.isSelected())
+					emergency = 1;
+				else if (em2.isSelected()&&!em3.isSelected()) 
+					emergency = 2;
+				else if (!em2.isSelected()&&em3.isSelected())
+					emergency = 3;
+				else emergency = 4;
 				DataManager.fileCreator(1, emergency, delay, temperature, 0, power);
 			}
 		});
@@ -654,6 +666,13 @@ public class Window extends JFrame {
 				for (int i=2; i<NUM_TEMP_VALUES; i++) {
 					power[i] = power[1];
 				}
+				if (!em2.isSelected()&&!em3.isSelected())
+					emergency = 1;
+				else if (em2.isSelected()&&!em3.isSelected()) 
+					emergency = 2;
+				else if (!em2.isSelected()&&em3.isSelected())
+					emergency = 3;
+				else emergency = 4;
 				DataManager.fileCreator(2, emergency, 4000, temperature, target, power);
 			}
 		});
@@ -754,6 +773,13 @@ public class Window extends JFrame {
 				for (int i=2; i<NUM_TEMP_VALUES; i++) {
 					power[i] = power[1];
 				}
+				if (!em2.isSelected()&&!em3.isSelected())
+					emergency = 1;
+				else if (em2.isSelected()&&!em3.isSelected()) 
+					emergency = 2;
+				else if (!em2.isSelected()&&em3.isSelected())
+					emergency = 3;
+				else emergency = 4;
 				DataManager.fileCreator(3, emergency, 4000, temperature, target, power);
 			}
 		});
