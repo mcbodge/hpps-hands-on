@@ -1,0 +1,512 @@
+#include <SPI.h>
+#include <SD.h>
+#include <math.h> //DO ROUNDUPS
+
+File myFile;
+
+String myString;
+byte program;
+char tempChar='';
+int date[6];
+int temperature[8]; //BETTER CONVERT IT IN int? THINK SO
+int power[8];
+int targetT; //read it from file
+int sPower=255;
+int emergency;
+int delay; 
+
+int led = 13;
+
+void setup()
+{	
+	analogWrite(3, 255);
+	pinMode(led, OUTPUT);
+	delay(500);
+	Serial.begin(9600);
+	readFile();
+
+	switch (program){
+
+	case 1:
+		userDefined();
+		error("1");
+		break;
+
+	case 2:
+		//industrialFSA(); //TEMP for test
+		powerEfficiency();
+		error("2");
+		break;
+
+	case 3:
+		coolingEfficiency();
+		error("B10");
+		break;
+
+	default:
+		error("main setup switch");
+	}
+
+}
+
+void loop(){
+	error("in the loop");
+}
+
+void readFile(){
+	Serial.print("Initializing SD card...");
+
+	if (!SD.begin()) {
+		error("initialization failed!");
+		return;
+	}
+
+	Serial.println("initialization done.");
+	// open the file for reading:
+
+	myFile = SD.open("psyduck.ini");
+
+	if (myFile) {
+		Serial.println("psyduck.ini:");
+
+		// read from the file until there's nothing else in it:
+		while (myFile.available()) {
+			tempChar = myFile.read();
+			switch (tempChar) {
+			case ';':
+				while (myFile.available() && tempChar != '\n'){
+					tempChar = myFile.read();
+				}
+				break;
+			case '\n': //Line Feed (10)
+				break;
+			case '\r': //Carriage Return (13)
+				break;
+			case '[':
+				tempChar = myFile.read();
+				while (myFile.available() && tempChar != ']'){
+					myString += tempChar;
+					tempChar = myFile.read();
+				}
+				Serial.println(myString);
+				dispatcher(myString);
+				myString = "";
+				break;
+			default:
+				error("INI selector");
+			}
+
+
+		}
+		// close the file:
+		myFile.close();
+
+	}
+	else {
+		// if the file didn't open, print an error:
+		Serial.println("error opening psyduck");
+	}
+}
+
+void dispatcher(String str)
+{
+	int x;
+	int y;
+	if (str == "emergency"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		myString = "";
+		tempChar = myFile.read();
+		while (myFile.available() && tempChar != '\n'){
+			if (tempChar == ';'){
+				while (myFile.available() && tempChar != '\n'){
+					tempChar = myFile.read();
+				}
+			}
+			else{
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+		}
+
+		}
+		emergency = myString.toInt();
+		Serial.println(emergency);
+	}
+	else if (str == "delay"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		myString = "";
+		tempChar = myFile.read();
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+		delay = myString.toInt();
+		Serial.println(delay);
+	}
+	else if (str == "program"){
+		myFile.read(); //Carriage Return (13)
+		myFile.read(); //Line Feed (10)
+		myFile.read(); //s
+		myFile.read(); //=
+		Serial.print("Program dispatched with myString: ");
+		Serial.println(myString);
+		program = myFile.read();
+	}
+	else if (str == "temperature"){
+		/*myString = "";
+		myFile.read(); //Carriage Return (13)
+		myFile.read(); //Line Feed (10)
+		myFile.read(); //t
+		myFile.read(); //=
+		tempChar = myFile.read();
+
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+
+		x = myString.toInt();
+
+		Serial.print("threshold: ");
+		Serial.println(x);
+
+		myString = "";
+
+		myFile.read(); //c
+		myFile.read(); //=
+
+		tempChar = myFile.read();
+
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+
+		y = myString.toInt();
+
+		Serial.print("critical: ");
+		Serial.println(y);
+
+		temperature[0] = x; //PERFORMANCE HERE
+		temperature[1] = x + (y - x + 1) / 8;
+		temperature[2] = x + (y - x + 1) / 4;
+		temperature[3] = x + 3 * (y - x + 1) / 8;
+		temperature[4] = x + (y - x + 1) / 2;
+		temperature[5] = x + 5 * (y - x + 1) / 8;
+		temperature[6] = x + 3 * (y - x + 1) / 4;
+		temperature[7] = y;*/
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		for (int i = 0; i < 8; i++){
+			myFile.read(); //number
+			myFile.read(); //=
+			myString = "";
+			tempChar = myFile.read();
+			while (myFile.available() && tempChar != '\n'){
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+			temperature[i] = myString.toInt();
+			Serial.println(temperature[i]);
+		}
+		myFile.read(); //t
+		myFile.read(); //= 
+		myString = "";
+		tempChar = myFile.read();
+		while (myFile.available() && tempChar != '\n'){
+			myString += tempChar;
+			tempChar = myFile.read();
+		}
+		targetT = myString.toInt();
+	}
+	else if (str == "power"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		for (int i = 0; i < 8; i++){
+			myFile.read(); //number
+			myFile.read(); //=
+			myString = "";
+			tempChar = myFile.read();
+			while (myFile.available() && tempChar != '\n'){
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+			power[i] = myString.toInt();
+			Serial.println(power[i]);
+		}
+	}
+	else if (str == "version"){
+		myFile.read();//Carriage Return (13)
+		myFile.read();//Line Feed (10)
+		for (int i = 0; i < 6; i++){
+			myFile.read(); //number
+			myFile.read(); //=
+			myString = "";
+			tempChar = myFile.read();
+			while (myFile.available() && tempChar != '\n'){
+				myString += tempChar;
+				tempChar = myFile.read();
+			}
+			date[i] = myString.toInt();
+			Serial.println(date[i]);
+		}
+	}
+
+}
+
+void userDefined() //B000
+{
+	int temp;
+	int index;
+	while (true){
+		temp = getTemp();
+		analogWrite(3, getPower(temp));
+		delay(4000);
+	}
+}
+
+void powerEfficiency() //B001
+{
+	byte state=B10;
+	int oldT;
+	int oldTemp = getTemp();
+	int newTemp;
+	while (true){ //TAKE A LOOK AT THE DELAYS
+
+		while (getTemp() > targetT){ //NEED TO SWAP THE TWO WHILE TO GIVE PRIORITY TO THIS ONE (also because there're external delays).
+			switch (state){
+			case B10:
+				if (getTemp() <= oldTemp) //LOOK IF IT'S BETTER TO SWAP THEM TO AVOID THE EQUAL -- IN TERMS OF PERFORMANCE
+					state = B00;
+				else
+					state = B11;
+				oldTemp = getTemp();
+				break;
+			case B00:
+				oldTemp = getTemp();
+				if (getTemp() <= oldTemp)
+					setPower(3);
+				else
+					state = B01;
+				break;
+			case B11:
+				oldTemp = getTemp();
+				if (oldTemp < getTemp())
+					setPower(10);
+				else
+					state = B10;
+				break;
+			case B01:
+				if (oldTemp < getTemp())
+					state = B11;
+				else
+					state = B00;
+				oldTemp = getTemp();
+				break;
+			}
+			delay(1000);
+		}
+		delay(500);
+		while (getTemp() <= targetT){ //underBHT
+			switch (state){
+			case B10:
+				if (getTemp() <= oldTemp) //LOOK IF IT'S BETTER TO SWAP THEM TO AVOID THE EQUAL -- IN TERMS OF PERFORMANCE
+					state = B00;
+				else
+					state = B11;
+				oldTemp = getTemp();
+				break;
+			case B00:
+				oldTemp = getTemp();
+				if (getTemp() <= oldTemp)
+					setPower(15);
+				else
+					state = B01;
+				break;
+			case B11:
+				oldTemp = getTemp();
+				if (oldTemp < getTemp())
+					setPower(2);
+				else
+					state = B10;
+				break;
+			case B01:
+				if (oldTemp < getTemp())
+					state = B11;
+				else
+					state = B00;
+				oldTemp = getTemp();
+				break;
+			}
+			delay(5000);
+
+		}
+		delay(500);
+	} //while true
+}
+
+void coolingEfficiency() //B010
+{
+	byte state=B10;
+	int oldT;
+	int criticalT;
+	int oldTemp = getTemp();
+	int newTemp;
+	int step = (temperature[7] - targetT) / 100;
+	if (step < 1)
+		step = 1;
+
+	int myTarget = targetT - step;
+
+	int savedTarget = myTarget;
+
+	while (true){ //TAKE A LOOK AT THE DELAYS
+
+		if (myTarget < getTemp()){
+			analogWrite(3, 255); //TODO put maxpower
+			while (myTarget < getTemp()){
+				if (criticalT < getTemp())
+					error(); //TODO do action
+				delay(500);
+			}
+			myTarget = myTarget - step;
+			delay(500);
+		}
+
+		while (5*getTemp() > 5*myTarget-(criticalT-targetT)){ //multiplied by 5 to avoid the division (20%=20/100=1/5)
+			switch (state){
+			case B10:
+				if (getTemp() <= oldTemp) //LOOK IF IT'S BETTER TO SWAP THEM TO AVOID THE EQUAL -- IN TERMS OF PERFORMANCE
+					state = B00;
+				else
+					state = B11;
+				oldTemp = getTemp();
+				break;
+			case B00:
+				oldTemp = getTemp();
+				if (getTemp() <= oldTemp)
+					setPower(3);
+				else
+					state = B01;
+				break;
+			case B11:
+				oldTemp = getTemp();
+				if (oldTemp < getTemp())
+					setPower(10);
+				else
+					state = B10;
+				break;
+			case B01:
+				if (oldTemp < getTemp())
+					state = B11;
+				else
+					state = B00;
+				oldTemp = getTemp();
+				break;
+			}
+			delay(1000);
+		}
+		delay(500);
+		while (5 * getTemp() <= 5 * myTarget - (criticalT - targetT)){ //underBHT
+			switch (state){
+			case B10:
+				if (5*getTemp() <= (5 * myTarget - (criticalT - targetT))) //LOOK IF IT'S BETTER TO SWAP THEM TO AVOID THE EQUAL -- IN TERMS OF PERFORMANCE
+					state = B00;
+				else
+					state = B11;
+				oldTemp = getTemp();
+				break;
+			case B00:
+				oldTemp = getTemp();
+				if (getTemp() <= oldTemp){
+					setPower(15);
+					myTarget = savedTarget; //RESET of myTarget, in case it was modified (lowered)
+				}
+				else
+					state = B01;
+				break;
+			case B11:
+				oldTemp = getTemp();
+				if (oldTemp < getTemp())
+					setPower(2);
+				else
+					state = B10;
+				break;
+			case B01:
+				if (oldTemp < getTemp())
+					state = B11;
+				else
+					state = B00;
+				oldTemp = getTemp();
+				break;
+			}
+			delay(5000);
+
+		}
+		delay(500);
+	} //while true
+}
+
+
+void industrialFSA() //B100
+{
+	analogWrite(3, 30);
+		
+	while (true){
+		//int i = 0;
+		//for (i = 1; i = 254; i++){
+		digitalWrite(led, HIGH);   // turn the LED on (HIGH is the voltage level)
+		delay(500);               // wait for a second
+		digitalWrite(led, LOW);    // turn the LED off by making the voltage LOW
+		delay(500);               // wait for a second
+		
+	   // analogWrite(3, i);
+		//}
+
+	}
+}
+
+void error(String e) //DEFAULT
+{
+	Serial.print("\nERROR from:  ");
+	Serial.println(e);
+}
+
+int getTemp(){
+	return 23; //aggiustare la scala non centigrada e aggiungere 1 alla parte intera sempre
+}
+
+void setPower(int x){ //OPTIMIZE BY USING INTEGERS
+	int k = (getTemp() - targetT)*(power[8] - power[1]) / (100 * (temperature[7] - temperature[0])); //aggiustare la scala non centigrada
+	sPower = sPower + x*k; //IT HAS TO BE AN INTEGER
+	if (sPower < 50){
+		analogWrite(3, 50);
+		sPower = 50;
+	}
+	else if (255 < sPower){
+		analogWrite(3, 255);
+		sPower = 255;
+	}
+	else{
+		analogWrite(3, sPower);
+	}
+	analogWrite(3, sPower);
+}
+
+int getPower(int t){
+	int i=0;
+	int p;
+	while (temperature[i] < t /*&& i < 8*/){
+		i++;
+	}
+
+	if (temperature[i] == t)
+		p=power[i];
+	else
+		p=(t - temperature[i - 1]) * (power[i] - power[i - 1]) / (temperature[i] - temperature[i - 1]) + power[i - 1];
+	//search in the array and interpolate, given the measured temperature
+
+	return 103 * p / 50;
+}
