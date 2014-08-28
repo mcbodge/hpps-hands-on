@@ -21,7 +21,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import logic.DataManager;
-//TODO ottimizzazione codice (soprattutto actions) e layout; intervalli sulle lbl non sono (quasi) mai uguali->visualizzare float, passare int;
+//TODO ottimizzazione codice (soprattutto actions) e layout;
 //quando cambio programma, perfezionare controlli sugli rbmenuitem;
 //sistemare comboDelay (impaginazione); default->operare sui buttons
 public class Window extends JFrame {
@@ -43,12 +43,12 @@ public class Window extends JFrame {
 	private JComboBox<Integer> comboThreshold1, comboCritical1, comboDelay, comboThreshold2, comboTarget2, comboCritical2, 
 								comboThreshold3, comboTarget3, comboCritical3;
 	private JLabel lblThreshold1, lblCritical1, lblThreshold2, lblTarget2, lblCritical2, lblThreshold3, lblTarget3, lblCritical3, 
-					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8, lblDelay, lblMinPow2, lblMaxPow2, lblMinPow3, lblMaxPow3,
+					lbl1, lbl2, lbl3, lbl4, lbl5, lbl6, lbl7, lbl8, lblDelay, pow, temp, lblMinPow2, lblMaxPow2, lblMinPow3, lblMaxPow3,
 					field1, field2, field3, field4, field5, field6, field7, field8, valMinPow2, valMaxPow2, valMinPow3, valMaxPow3;
 	private JTextArea description2, description3;
-	private float threshold, critical;
 	private int emergency, delay, target;
-	private int[] temperature, power;
+	private float[] tempToLabels;
+	private int[] power, temperature;
 
 	public Window() {
 		initialize();
@@ -102,61 +102,63 @@ public class Window extends JFrame {
 		submenu.add(em3);
 		menu.add(submenu);
 		menuBar.add(menu);
-		lblDelay = new JLabel("Delay(ms) :");
+		lblDelay = new JLabel("Delay (ms) :");
 		comboDelay = new JComboBox<Integer>();
 		for (int item=500; item<10000; item=item+500)
 			comboDelay.addItem(item);
 		for (int item=10000; item<31000; item=item+1000)
 			comboDelay.addItem(item);
 		comboDelay.setSelectedItem(4000);
+		pow = new JLabel("Power: ");
+		temp = new JLabel("Temp: ");
 		slider1 = new JSlider(JSlider.VERTICAL);;
 		slider1.setMinorTickSpacing(5);
 		slider1.setMajorTickSpacing(20);
 		slider1.setPaintTicks(true);
 		slider1.setPaintLabels(true);
-		field1 = new JLabel(""+slider1.getValue());
+		field1 = new JLabel(slider1.getValue()+"%");
 		slider2 = new JSlider(JSlider.VERTICAL);
 		slider2.setMinorTickSpacing(5);
 		slider2.setMajorTickSpacing(20);
 		slider2.setPaintTicks(true);
 		slider2.setPaintLabels(true);
-		field2 = new JLabel(""+slider2.getValue());
+		field2 = new JLabel(slider2.getValue()+"%");
 		slider3 = new JSlider(JSlider.VERTICAL);
 		slider3.setMinorTickSpacing(5);
 		slider3.setMajorTickSpacing(20);
 		slider3.setPaintTicks(true);
 		slider3.setPaintLabels(true);
-		field3 = new JLabel(""+slider3.getValue());
+		field3 = new JLabel(slider3.getValue()+"%");
 		slider4 = new JSlider(JSlider.VERTICAL);
 		slider4.setMinorTickSpacing(5);
 		slider4.setMajorTickSpacing(20);
 		slider4.setPaintTicks(true);
 		slider4.setPaintLabels(true);
-		field4 = new JLabel(""+slider4.getValue());
+		field4 = new JLabel(slider4.getValue()+"%");
 		slider5 = new JSlider(JSlider.VERTICAL);
 		slider5.setMinorTickSpacing(5);
 		slider5.setMajorTickSpacing(20);
 		slider5.setPaintTicks(true);
 		slider5.setPaintLabels(true);
-		field5 = new JLabel(""+slider5.getValue());
+		field5 = new JLabel(slider5.getValue()+"%");
 		slider6 = new JSlider(JSlider.VERTICAL);
 		slider6.setMinorTickSpacing(5);
 		slider6.setMajorTickSpacing(20);
 		slider6.setPaintTicks(true);
 		slider6.setPaintLabels(true);
-		field6 = new JLabel(""+slider6.getValue());
+		field6 = new JLabel(slider6.getValue()+"%");
 		slider7 = new JSlider(JSlider.VERTICAL);
 		slider7.setMinorTickSpacing(5);
 		slider7.setMajorTickSpacing(20);
 		slider7.setPaintTicks(true);
 		slider7.setPaintLabels(true);
-		field7 = new JLabel(""+slider7.getValue());
+		field7 = new JLabel(slider7.getValue()+"%");
 		slider8 = new JSlider(JSlider.VERTICAL);
 		slider8.setMinorTickSpacing(5);
 		slider8.setMajorTickSpacing(20);
 		slider8.setPaintTicks(true);
 		slider8.setPaintLabels(true);
-		field8 = new JLabel(""+slider8.getValue());
+		field8 = new JLabel(slider8.getValue()+"%");
 		jButton1 = new JButton("Submit");
 		jButton1.setEnabled(false);
 		jButton2 = new JButton("Submit");
@@ -171,14 +173,14 @@ public class Window extends JFrame {
 		comboThreshold3 = new JComboBox<Integer>();
 		comboTarget3 = new JComboBox<Integer>();
 		comboCritical3 = new JComboBox<Integer>();
-		lblThreshold1 = new JLabel("T threshold:");
-		lblCritical1 = new JLabel("T critical:");
-		lblThreshold2 = new JLabel("T threshold:");
-		lblTarget2 = new JLabel("T target:");
-		lblCritical2 = new JLabel("T critical:");
-		lblThreshold3 = new JLabel("T threshold:");
-		lblTarget3 = new JLabel("T target:");
-		lblCritical3 = new JLabel("T critical:");
+		lblThreshold1 = new JLabel("T threshold (\u00b0C) :");
+		lblCritical1 = new JLabel("T critical (\u00b0C) :");
+		lblThreshold2 = new JLabel("T threshold (\u00b0C) :");
+		lblTarget2 = new JLabel("T target (\u00b0C) :");
+		lblCritical2 = new JLabel("T critical (\u00b0C) :");
+		lblThreshold3 = new JLabel("T threshold (\u00b0C) :");
+		lblTarget3 = new JLabel("T target (\u00b0C) :");
+		lblCritical3 = new JLabel("T critical (\u00b0C) :");
 		lblMinPow2 = new JLabel("Min Power:");
 		lblMaxPow2 = new JLabel("Max Power:");
 		lblMinPow3 = new JLabel("Min Power:");
@@ -193,6 +195,7 @@ public class Window extends JFrame {
 		maxPow2.setMajorTickSpacing(20);
 		maxPow2.setPaintTicks(true);
 		maxPow2.setPaintLabels(true);
+		maxPow2.setValue(100);
 		minPow3 = new JSlider();
 		minPow3.setMinorTickSpacing(5);
 		minPow3.setMajorTickSpacing(20);
@@ -203,25 +206,27 @@ public class Window extends JFrame {
 		maxPow3.setMajorTickSpacing(20);
 		maxPow3.setPaintTicks(true);
 		maxPow3.setPaintLabels(true);
-		valMinPow2 = new JLabel(""+minPow2.getValue());
-		valMaxPow2 = new JLabel(""+maxPow2.getValue());
-		valMinPow3 = new JLabel(""+minPow3.getValue());
-		valMaxPow3 = new JLabel(""+maxPow3.getValue());
-		threshold = Tmin;
-		critical = Tmax;
+		maxPow3.setValue(100);
+		valMinPow2 = new JLabel(""+minPow2.getValue()+"%");
+		valMaxPow2 = new JLabel(""+maxPow2.getValue()+"%");
+		valMinPow3 = new JLabel(""+minPow3.getValue()+"%");
+		valMaxPow3 = new JLabel(""+maxPow3.getValue()+"%");
+		tempToLabels = new float[NUM_TEMP_VALUES];
+		tempToLabels[0] = Tmin;
+		tempToLabels[7] = Tmax;
 		temperature = new int[NUM_TEMP_VALUES];
 		power = new int[NUM_TEMP_VALUES];
-		for (int i=0; i<NUM_TEMP_VALUES; i++) {
-			temperature[i] = Math.round(threshold + (critical-threshold)*i/(NUM_TEMP_VALUES-1));
+		for (int i=1; i<(NUM_TEMP_VALUES-1); i++) {
+			tempToLabels[i] = (tempToLabels[0] + (tempToLabels[7]-tempToLabels[0])*i/(NUM_TEMP_VALUES-1));
 		}
-		lbl1 = new JLabel(String.format("%d", temperature[0])+" \u00b0C");
-		lbl2 = new JLabel(String.format("%d", temperature[1])+" \u00b0C");
-		lbl3 = new JLabel(String.format("%d", temperature[2])+" \u00b0C");
-		lbl4 = new JLabel(String.format("%d", temperature[3])+" \u00b0C");
-		lbl5 = new JLabel(String.format("%d", temperature[4])+" \u00b0C");
-		lbl6 = new JLabel(String.format("%d", temperature[5])+" \u00b0C");
-		lbl7 = new JLabel(String.format("%d", temperature[6])+" \u00b0C");
-		lbl8 = new JLabel(String.format("%d", temperature[7])+" \u00b0C");
+		lbl1 = new JLabel(String.format("%.1f", tempToLabels[0])+" \u00b0C");
+		lbl2 = new JLabel(String.format("%.1f", tempToLabels[1])+" \u00b0C");
+		lbl3 = new JLabel(String.format("%.1f", tempToLabels[2])+" \u00b0C");
+		lbl4 = new JLabel(String.format("%.1f", tempToLabels[3])+" \u00b0C");
+		lbl5 = new JLabel(String.format("%.1f", tempToLabels[4])+" \u00b0C");
+		lbl6 = new JLabel(String.format("%.1f", tempToLabels[5])+" \u00b0C");
+		lbl7 = new JLabel(String.format("%.1f", tempToLabels[6])+" \u00b0C");
+		lbl8 = new JLabel(String.format("%.1f", tempToLabels[7])+" \u00b0C");
 		description2 = new JTextArea("ciao sono il due.");
 		description3 = new JTextArea("ciao sono il tre.");
 		
@@ -230,16 +235,19 @@ public class Window extends JFrame {
 						.addGroup(layout1.createSequentialGroup()
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
 										.addComponent(lblThreshold1)
-										.addComponent(lblCritical1))
+										.addComponent(lblCritical1)
+										.addComponent(lblDelay))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
 										.addComponent(comboThreshold1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE)
 										.addComponent(comboCritical1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-										          GroupLayout.PREFERRED_SIZE))
-								.addComponent(lblDelay)
-								.addComponent(comboDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								          GroupLayout.PREFERRED_SIZE))
+										          GroupLayout.PREFERRED_SIZE)
+										.addComponent(comboDelay, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+										          GroupLayout.PREFERRED_SIZE)))
 						.addGroup(layout1.createSequentialGroup()
+								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
+										.addComponent(pow)
+										.addComponent(temp))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.LEADING)
 										.addComponent(field1)
 										.addComponent(slider1)
@@ -275,18 +283,19 @@ public class Window extends JFrame {
 						.addComponent(jButton1))
 		);
 		layout1.setVerticalGroup(layout1.createSequentialGroup()
-				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.BASELINE)
+				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
 						.addGroup(layout1.createSequentialGroup()
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.BASELINE)
 										.addComponent(lblThreshold1)
 										.addComponent(comboThreshold1))
 								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.BASELINE)
 										.addComponent(lblCritical1)
-										.addComponent(comboCritical1)))
-						.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
-								.addComponent(lblDelay)
-								.addComponent(comboDelay)))
+										.addComponent(comboCritical1))
+								.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.BASELINE)
+										.addComponent(lblDelay)
+										.addComponent(comboDelay))))
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(pow)
 						.addComponent(field1)
 						.addComponent(field2)
 						.addComponent(field3)
@@ -313,6 +322,7 @@ public class Window extends JFrame {
 						.addComponent(slider8, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 						          GroupLayout.PREFERRED_SIZE))
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
+						.addComponent(temp)
 						.addComponent(lbl1)
 						.addComponent(lbl2)
 						.addComponent(lbl3)
@@ -338,15 +348,15 @@ public class Window extends JFrame {
 										          GroupLayout.PREFERRED_SIZE)
 										.addComponent(comboCritical2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(lblMinPow2)
 										.addComponent(lblMaxPow2))
-								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(minPow2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE)
 										.addComponent(maxPow2, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout2.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(valMinPow2)
 										.addComponent(valMaxPow2)))
 						.addComponent(description2)
@@ -391,15 +401,15 @@ public class Window extends JFrame {
 										          GroupLayout.PREFERRED_SIZE)
 										.addComponent(comboCritical3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(lblMinPow3)
 										.addComponent(lblMaxPow3))
-								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(minPow3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE)
 										.addComponent(maxPow3, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
 										          GroupLayout.PREFERRED_SIZE))
-								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(layout3.createParallelGroup(GroupLayout.Alignment.TRAILING)
 										.addComponent(valMinPow3)
 										.addComponent(valMaxPow3)))
 						.addComponent(description3)
@@ -469,30 +479,34 @@ public class Window extends JFrame {
 	private void actions() {
 		rbMenuItem1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threshold = Tmin;
-				critical = Tmax;
 				cardLayout.show(contentPane, "first");
 			}
 		});
 
 		rbMenuItem2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threshold = Tmin;
-				critical = Tmax;
 		        cardLayout.show(contentPane, "second");
 			}
 		});
 		
 		rbMenuItem3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				threshold = Tmin;
-				critical = Tmax;
 		        cardLayout.show(contentPane, "third");
 			}
 		});
 		
 		jButton1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (!em2.isSelected()&&!em3.isSelected())
+					emergency = 1;
+				else if (em2.isSelected()&&!em3.isSelected()) 
+					emergency = 2;
+				else if (!em2.isSelected()&&em3.isSelected())
+					emergency = 3;
+				else emergency = 4;
+				delay = (int) comboDelay.getSelectedItem();
+				for (int i=0; i<NUM_TEMP_VALUES; i++)
+					temperature[i] = Math.round(tempToLabels[i]);
 				power[0] = slider1.getValue();
 				power[1] = slider2.getValue();
 				power[2] = slider3.getValue();
@@ -501,14 +515,6 @@ public class Window extends JFrame {
 				power[5] = slider6.getValue();
 				power[6] = slider7.getValue();
 				power[7] = slider8.getValue();
-				delay = (int) comboDelay.getSelectedItem();
-				if (!em2.isSelected()&&!em3.isSelected())
-					emergency = 1;
-				else if (em2.isSelected()&&!em3.isSelected()) 
-					emergency = 2;
-				else if (!em2.isSelected()&&em3.isSelected())
-					emergency = 3;
-				else emergency = 4;
 				DataManager.fileCreator(1, emergency, delay, temperature, 0, power);
 			}
 		});
@@ -517,18 +523,18 @@ public class Window extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (comboThreshold1.getSelectedItem()!=null) {
 					comboCritical1.setEnabled(true);
-					threshold = (int) comboThreshold1.getSelectedItem();
-					if (comboCritical1.getSelectedItem()==null || threshold > (int) comboCritical1.getSelectedItem()) {
+					tempToLabels[0] = (int) comboThreshold1.getSelectedItem();
+					if (comboCritical1.getSelectedItem()==null || tempToLabels[0] > (int) comboCritical1.getSelectedItem()) {
 						comboCritical1.removeAllItems();
 						for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
 							comboCritical1.addItem(i);
 						}
-					} else if (threshold > (int) comboCritical1.getItemAt(0)){
+					} else if (tempToLabels[0] > (int) comboCritical1.getItemAt(0)){
 						int i = 0;
-						while (threshold > comboCritical1.getItemAt(i)) {
+						while (tempToLabels[0] > comboCritical1.getItemAt(i)) {
 							comboCritical1.removeItemAt(i);
 						}
-					} else if (threshold < (int) comboCritical1.getItemAt(0)) {
+					} else if (tempToLabels[0] < (int) comboCritical1.getItemAt(0)) {
 						int selection = (int) comboCritical1.getSelectedItem();
 						comboCritical1.removeAllItems();
 						for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
@@ -536,17 +542,17 @@ public class Window extends JFrame {
 						}
 						comboCritical1.setSelectedItem(selection);
 					}
-					for (int i=0; i<NUM_TEMP_VALUES; i++) {
-						temperature[i] = Math.round(threshold + (critical-threshold)*i/(NUM_TEMP_VALUES-1));
+					for (int i=1; i<NUM_TEMP_VALUES; i++) {
+						tempToLabels[i] = (tempToLabels[0] + (tempToLabels[7]-tempToLabels[0])*i/(NUM_TEMP_VALUES-1));
 					}
-					lbl1.setText(String.format("%d", temperature[0])+" \u00b0C");
-					lbl2.setText(String.format("%d", temperature[1])+" \u00b0C");
-					lbl3.setText(String.format("%d", temperature[2])+" \u00b0C");
-					lbl4.setText(String.format("%d", temperature[3])+" \u00b0C");
-					lbl5.setText(String.format("%d", temperature[4])+" \u00b0C");
-					lbl6.setText(String.format("%d", temperature[5])+" \u00b0C");
-					lbl7.setText(String.format("%d", temperature[6])+" \u00b0C");
-					lbl8.setText(String.format("%d", temperature[7])+" \u00b0C");
+					lbl1.setText(String.format("%.1f", tempToLabels[0])+" \u00b0C");
+					lbl2.setText(String.format("%.1f", tempToLabels[1])+" \u00b0C");
+					lbl3.setText(String.format("%.1f", tempToLabels[2])+" \u00b0C");
+					lbl4.setText(String.format("%.1f", tempToLabels[3])+" \u00b0C");
+					lbl5.setText(String.format("%.1f", tempToLabels[4])+" \u00b0C");
+					lbl6.setText(String.format("%.1f", tempToLabels[5])+" \u00b0C");
+					lbl7.setText(String.format("%.1f", tempToLabels[6])+" \u00b0C");
+					lbl8.setText(String.format("%.1f", tempToLabels[7])+" \u00b0C");
 				} else {
 					jButton1.setEnabled(false);
 					comboCritical1.removeAllItems();
@@ -559,17 +565,17 @@ public class Window extends JFrame {
 		comboCritical1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboCritical1.getSelectedItem()!=null) {
-					critical = (int) comboCritical1.getSelectedItem();
-					for (int i=1; i<NUM_TEMP_VALUES; i++) {
-						temperature[i] = Math.round(threshold + (critical-threshold)*i/(NUM_TEMP_VALUES-1));
+					tempToLabels[7] = (int) comboCritical1.getSelectedItem();
+					for (int i=1; i<(NUM_TEMP_VALUES-1); i++) {
+						tempToLabels[i] = (tempToLabels[0] + (tempToLabels[7]-tempToLabels[0])*i/(NUM_TEMP_VALUES-1));
 					}
-					lbl2.setText(String.format("%d", temperature[1])+" \u00b0C");
-					lbl3.setText(String.format("%d", temperature[2])+" \u00b0C");
-					lbl4.setText(String.format("%d", temperature[3])+" \u00b0C");
-					lbl5.setText(String.format("%d", temperature[4])+" \u00b0C");
-					lbl6.setText(String.format("%d", temperature[5])+" \u00b0C");
-					lbl7.setText(String.format("%d", temperature[6])+" \u00b0C");
-					lbl8.setText(String.format("%d", temperature[7])+" \u00b0C");
+					lbl2.setText(String.format("%.1f", tempToLabels[1])+" \u00b0C");
+					lbl3.setText(String.format("%.1f", tempToLabels[2])+" \u00b0C");
+					lbl4.setText(String.format("%.1f", tempToLabels[3])+" \u00b0C");
+					lbl5.setText(String.format("%.1f", tempToLabels[4])+" \u00b0C");
+					lbl6.setText(String.format("%.1f", tempToLabels[5])+" \u00b0C");
+					lbl7.setText(String.format("%.1f", tempToLabels[6])+" \u00b0C");
+					lbl8.setText(String.format("%.1f", tempToLabels[7])+" \u00b0C");
 					jButton1.setEnabled(true);
 				}
 			}
@@ -578,7 +584,7 @@ public class Window extends JFrame {
 		slider1.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider1.getValue();
-				field1.setText(""+value);
+				field1.setText(value+"%");
 				if (slider2.getValue()<value)
 					slider2.setValue(value);
 			}
@@ -587,7 +593,7 @@ public class Window extends JFrame {
 		slider2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider2.getValue();
-				field2.setText(""+value);
+				field2.setText(value+"%");
 				if (slider3.getValue()<value)
 					slider3.setValue(value);
 				if (slider1.getValue()>value)
@@ -598,7 +604,7 @@ public class Window extends JFrame {
 		slider3.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider3.getValue();
-				field3.setText(""+value);
+				field3.setText(value+"%");
 				if (slider4.getValue()<value)
 					slider4.setValue(value);
 				if (slider2.getValue()>value)
@@ -609,7 +615,7 @@ public class Window extends JFrame {
 		slider4.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider4.getValue();
-				field4.setText(""+value);
+				field4.setText(value+"%");
 				if (slider5.getValue()<value)
 					slider5.setValue(value);
 				if (slider3.getValue()>value)
@@ -620,7 +626,7 @@ public class Window extends JFrame {
 		slider5.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider5.getValue();
-				field5.setText(""+value);
+				field5.setText(value+"%");
 				if (slider6.getValue()<value)
 					slider6.setValue(value);
 				if (slider4.getValue()>value)
@@ -631,7 +637,7 @@ public class Window extends JFrame {
 		slider6.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider6.getValue();
-				field6.setText(""+value);
+				field6.setText(value+"%");
 				if (slider7.getValue()<value)
 					slider7.setValue(value);
 				if (slider5.getValue()>value)
@@ -642,7 +648,7 @@ public class Window extends JFrame {
 		slider7.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider7.getValue();
-				field7.setText(""+value);
+				field7.setText(value+"%");
 				if (slider8.getValue()<value)
 					slider8.setValue(value);
 				if (slider6.getValue()>value)
@@ -653,7 +659,7 @@ public class Window extends JFrame {
 		slider8.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = slider8.getValue();
-				field8.setText(""+slider8.getValue());
+				field8.setText(slider8.getValue()+"%");
 				if (slider7.getValue()>value)
 					slider7.setValue(value);
 			}
@@ -661,11 +667,6 @@ public class Window extends JFrame {
 		
 		jButton2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				power[0] = minPow2.getValue();
-				power[1] = maxPow2.getValue();
-				for (int i=2; i<NUM_TEMP_VALUES; i++) {
-					power[i] = power[1];
-				}
 				if (!em2.isSelected()&&!em3.isSelected())
 					emergency = 1;
 				else if (em2.isSelected()&&!em3.isSelected()) 
@@ -673,6 +674,14 @@ public class Window extends JFrame {
 				else if (!em2.isSelected()&&em3.isSelected())
 					emergency = 3;
 				else emergency = 4;
+				temperature[1] = (int) comboCritical2.getSelectedItem();
+				for (int i=2; i<NUM_TEMP_VALUES; i++)
+					temperature[i] = temperature[1];
+				power[0] = minPow2.getValue();
+				power[1] = maxPow2.getValue();
+				for (int i=2; i<NUM_TEMP_VALUES; i++) {
+					power[i] = power[1];
+				}
 				DataManager.fileCreator(2, emergency, 4000, temperature, target, power);
 			}
 		});
@@ -741,17 +750,15 @@ public class Window extends JFrame {
 		
 		comboCritical2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboCritical2.getSelectedItem()!=null) {
-					temperature[7] = (int) comboCritical2.getSelectedItem();
+				if (comboCritical2.getSelectedItem()!=null)
 					jButton2.setEnabled(true);
-				}
 			}
 		});
 		
 		minPow2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = minPow2.getValue();
-				valMinPow2.setText(""+value);
+				valMinPow2.setText(""+value+"%");
 				if (maxPow2.getValue()<value)
 					maxPow2.setValue(value);
 			}
@@ -760,7 +767,7 @@ public class Window extends JFrame {
 		maxPow2.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = maxPow2.getValue();
-				valMaxPow2.setText(""+value);
+				valMaxPow2.setText(""+value+"%");
 				if (minPow2.getValue()>value)
 					minPow2.setValue(value);
 			}
@@ -768,11 +775,6 @@ public class Window extends JFrame {
 		
 		jButton3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				power[0] = minPow3.getValue();
-				power[1] = maxPow3.getValue();
-				for (int i=2; i<NUM_TEMP_VALUES; i++) {
-					power[i] = power[1];
-				}
 				if (!em2.isSelected()&&!em3.isSelected())
 					emergency = 1;
 				else if (em2.isSelected()&&!em3.isSelected()) 
@@ -780,6 +782,14 @@ public class Window extends JFrame {
 				else if (!em2.isSelected()&&em3.isSelected())
 					emergency = 3;
 				else emergency = 4;
+				temperature[1] = (int) comboCritical3.getSelectedItem();
+				for (int i=2; i<NUM_TEMP_VALUES; i++)
+					temperature[i] = temperature[1];
+				power[0] = minPow3.getValue();
+				power[1] = maxPow3.getValue();
+				for (int i=2; i<NUM_TEMP_VALUES; i++) {
+					power[i] = power[1];
+				}
 				DataManager.fileCreator(3, emergency, 4000, temperature, target, power);
 			}
 		});
@@ -848,17 +858,15 @@ public class Window extends JFrame {
 		
 		comboCritical3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (comboCritical3.getSelectedItem()!=null) {
-					temperature[7] = (int) comboCritical3.getSelectedItem();
+				if (comboCritical3.getSelectedItem()!=null)
 					jButton3.setEnabled(true);
-				}
 			}
 		});
 		
 		minPow3.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = minPow3.getValue();
-				valMinPow3.setText(""+value);
+				valMinPow3.setText(""+value+"%");
 				if (maxPow3.getValue()<value)
 					maxPow3.setValue(value);
 			}
@@ -867,7 +875,7 @@ public class Window extends JFrame {
 		maxPow3.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
 				int value = maxPow3.getValue();
-				valMaxPow3.setText(""+value);
+				valMaxPow3.setText(""+value+"%");
 				if (minPow3.getValue()>value)
 					minPow3.setValue(value);
 			}
