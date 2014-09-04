@@ -2,8 +2,9 @@ package logic;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -22,7 +23,7 @@ public class DataManager {
 			if (!file.exists())
 				file.createNewFile();
 			
-			BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+			BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 			writer.append("; The INI file looks like:\n\n");
 			writer.append("[program]\n");
 			writer.append("s=" + program + "\n\n");
