@@ -24,7 +24,7 @@ import javax.swing.event.ChangeListener;
 import logic.DataManager;
 
 public class Window extends JFrame {
-	//TODO descrizioni
+
 	private static final long serialVersionUID = 1L;
 	private static final int Tmin = -40;
 	private static final int Tmax = 120;
@@ -255,8 +255,28 @@ public class Window extends JFrame {
 		lbl6 = new JLabel(String.format("%.1f", tempToLabels[5])+" \u00b0C");
 		lbl7 = new JLabel(String.format("%.1f", tempToLabels[6])+" \u00b0C");
 		lbl8 = new JLabel(String.format("%.1f", tempToLabels[7])+" \u00b0C");
-		description2 = new JTextArea("ciao sono il due.");
-		description3 = new JTextArea("ciao sono il tre.");
+		description2 = new JTextArea("You are using the Power efficiency program.\n"
+				+ "This program should be used when it is not so important to reach the target temperature immediately"
+				+ " and it allows to reduce the power consumption.\n\n"
+				+ "Select the minimum and the maximum power of the fan and set the following three needed values of temperature:\n"
+				+ "T threshold : if the temperature goes below this value, the fan is switched off;\n"
+				+ "T target : it is the value of temperature you want to obtain, the system will try to reach it and"
+				+ " to maintain the temperature stable around this value;\n"
+				+ "T critical : it is the value of temperature you never want to reach, if the temperature increases beyond this value,"
+				+ " the emergency actions are performed.");
+		description2.setLineWrap(true);
+		description2.setWrapStyleWord(true);
+		description3 = new JTextArea("You are using the Cooling efficiency program.\n"
+				+ "This program should be used when the target temperature has to be reached as quickly as possible.\n\n"
+				+ "Select the minimum and the maximum power of the fan and set the following three needed values of temperature:\n"
+				+ "T threshold : if the temperature goes below this value, the fan is switched off;\n"
+				+ "T target : the system will try to maintain the temperature stable below this value, to do that, "
+				+ "if the measured temperature is higher than the T target, "
+				+ "the power of the fan will work at its maximum value;\n"
+				+ "T critical : it is the value of temperature you never want to reach, if the temperature increases beyond this value,"
+				+ " the emergency actions are performed.");
+		description3.setLineWrap(true);
+		description3.setWrapStyleWord(true);
 		
 		layout1.setHorizontalGroup(layout1.createSequentialGroup()
 				.addGroup(layout1.createParallelGroup(GroupLayout.Alignment.CENTER)
