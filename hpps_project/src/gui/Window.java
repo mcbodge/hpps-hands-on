@@ -24,7 +24,7 @@ import javax.swing.event.ChangeListener;
 import logic.DataManager;
 
 public class Window extends JFrame {
-	
+	//TODO descrizioni
 	private static final long serialVersionUID = 1L;
 	private static final int Tmin = -40;
 	private static final int Tmax = 120;
@@ -87,7 +87,7 @@ public class Window extends JFrame {
 		rbMenuItem2 = new JRadioButtonMenuItem("Power Efficiency");
 		group.add(rbMenuItem2);
 		menu.add(rbMenuItem2);
-		rbMenuItem3 = new JRadioButtonMenuItem("Max Cooling Efficieny");
+		rbMenuItem3 = new JRadioButtonMenuItem("Cooling Efficieny");
 		group.add(rbMenuItem3);
 		menu.add(rbMenuItem3);
 		menuBar = new JMenuBar();
@@ -99,7 +99,7 @@ public class Window extends JFrame {
 		submenu.add(em1);
 		em2 = new JRadioButtonMenuItem("Alarm");
 		submenu.add(em2);
-		em3 = new JRadioButtonMenuItem("Switching off");
+		em3 = new JRadioButtonMenuItem("Switch off");
 		submenu.add(em3);
 		menu.add(submenu);
 		menuBar.add(menu);
@@ -115,56 +115,56 @@ public class Window extends JFrame {
 		pow.setFont(italic);
 		temp = new JLabel("Temp: ");
 		temp.setFont(italic);
-		slider1 = new JSlider(JSlider.VERTICAL);;
+		slider1 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider1.setMinorTickSpacing(5);
 		slider1.setMajorTickSpacing(20);
 		slider1.setPaintTicks(true);
 		slider1.setPaintLabels(true);
 		field1 = new JLabel(slider1.getValue()+"%");
 		field1.setFont(bold);
-		slider2 = new JSlider(JSlider.VERTICAL);
+		slider2 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider2.setMinorTickSpacing(5);
 		slider2.setMajorTickSpacing(20);
 		slider2.setPaintTicks(true);
 		slider2.setPaintLabels(true);
 		field2 = new JLabel(slider2.getValue()+"%");
 		field2.setFont(bold);
-		slider3 = new JSlider(JSlider.VERTICAL);
+		slider3 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider3.setMinorTickSpacing(5);
 		slider3.setMajorTickSpacing(20);
 		slider3.setPaintTicks(true);
 		slider3.setPaintLabels(true);
 		field3 = new JLabel(slider3.getValue()+"%");
 		field3.setFont(bold);
-		slider4 = new JSlider(JSlider.VERTICAL);
+		slider4 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider4.setMinorTickSpacing(5);
 		slider4.setMajorTickSpacing(20);
 		slider4.setPaintTicks(true);
 		slider4.setPaintLabels(true);
 		field4 = new JLabel(slider4.getValue()+"%");
 		field4.setFont(bold);
-		slider5 = new JSlider(JSlider.VERTICAL);
+		slider5 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider5.setMinorTickSpacing(5);
 		slider5.setMajorTickSpacing(20);
 		slider5.setPaintTicks(true);
 		slider5.setPaintLabels(true);
 		field5 = new JLabel(slider5.getValue()+"%");
 		field5.setFont(bold);
-		slider6 = new JSlider(JSlider.VERTICAL);
+		slider6 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider6.setMinorTickSpacing(5);
 		slider6.setMajorTickSpacing(20);
 		slider6.setPaintTicks(true);
 		slider6.setPaintLabels(true);
 		field6 = new JLabel(slider6.getValue()+"%");
 		field6.setFont(bold);
-		slider7 = new JSlider(JSlider.VERTICAL);
+		slider7 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider7.setMinorTickSpacing(5);
 		slider7.setMajorTickSpacing(20);
 		slider7.setPaintTicks(true);
 		slider7.setPaintLabels(true);
 		field7 = new JLabel(slider7.getValue()+"%");
 		field7.setFont(bold);
-		slider8 = new JSlider(JSlider.VERTICAL);
+		slider8 = new JSlider(JSlider.VERTICAL, 0, 100, 50);
 		slider8.setMinorTickSpacing(5);
 		slider8.setMajorTickSpacing(20);
 		slider8.setPaintTicks(true);
@@ -472,7 +472,7 @@ public class Window extends JFrame {
 		getContentPane().add(contentPane, BorderLayout.CENTER);
 		
 		comboThreshold1.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
+		for(int i=Tmin; i<Tmax-6; i++){
 			comboThreshold1.addItem(i);
 		}
 		
@@ -480,7 +480,7 @@ public class Window extends JFrame {
 		comboCritical1.setEnabled(false);
 		
 		comboThreshold2.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
+		for(int i=Tmin; i<Tmax-1; i++){
 			comboThreshold2.addItem(i);
 		}
 		
@@ -491,7 +491,7 @@ public class Window extends JFrame {
 		comboCritical2.setEnabled(false);
 	
 		comboThreshold3.addItem(null);
-		for(int i=Tmin; i<Tmax; i++){
+		for(int i=Tmin; i<Tmax-1; i++){
 			comboThreshold3.addItem(i);
 		}
 		
@@ -552,20 +552,20 @@ public class Window extends JFrame {
 				if (comboThreshold1.getSelectedItem()!=null) {
 					comboCritical1.setEnabled(true);
 					tempToLabels[0] = (int) comboThreshold1.getSelectedItem();
-					if (comboCritical1.getSelectedItem()==null || tempToLabels[0] > (int) comboCritical1.getSelectedItem()) {
+					if (comboCritical1.getSelectedItem()==null || tempToLabels[0]+7 > (int) comboCritical1.getSelectedItem()) {
 						comboCritical1.removeAllItems();
-						for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold1.getSelectedItem()+7; i<Tmax+1; i++){
 							comboCritical1.addItem(i);
 						}
-					} else if (tempToLabels[0] > (int) comboCritical1.getItemAt(0)){
+					} else if (tempToLabels[0]+7 >= (int) comboCritical1.getItemAt(0)){
 						int i = 0;
-						while (tempToLabels[0] > comboCritical1.getItemAt(i)) {
+						while (tempToLabels[0]+7 >= comboCritical1.getItemAt(i)) {
 							comboCritical1.removeItemAt(i);
 						}
 					} else if (tempToLabels[0] < (int) comboCritical1.getItemAt(0)) {
 						int selection = (int) comboCritical1.getSelectedItem();
 						comboCritical1.removeAllItems();
-						for (int i=(int) comboThreshold1.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold1.getSelectedItem()+7; i<Tmax+1; i++){
 							comboCritical1.addItem(i);
 						}
 						comboCritical1.setSelectedItem(selection);
@@ -615,6 +615,8 @@ public class Window extends JFrame {
 				field1.setText(value+"%");
 				if (slider2.getValue()<value)
 					slider2.setValue(value);
+				if (value == 0)
+					slider1.setValue(1);
 			}
 		});
 		
@@ -722,18 +724,18 @@ public class Window extends JFrame {
 					temperature[0] = (int) comboThreshold2.getSelectedItem();
 					if (comboTarget2.getSelectedItem()==null || temperature[0] > (int) comboTarget2.getSelectedItem()) {
 						comboTarget2.removeAllItems();
-						for (int i=(int) comboThreshold2.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold2.getSelectedItem()+1; i<Tmax; i++){
 							comboTarget2.addItem(i);
 						}
-					} else if (temperature[0] > (int) comboTarget2.getItemAt(0)){
+					} else if (temperature[0] >= (int) comboTarget2.getItemAt(0)){
 						int i = 0;
-						while (temperature[0] > comboTarget2.getItemAt(i)) {
+						while (temperature[0] >= comboTarget2.getItemAt(i)) {
 							comboTarget2.removeItemAt(i);
 						}
 					} else if (temperature[0] < (int) comboTarget2.getItemAt(0)) {
 						int selection = (int) comboTarget2.getSelectedItem();
 						comboTarget2.removeAllItems();
-						for (int i=(int) comboThreshold2.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold2.getSelectedItem()+1; i<Tmax; i++){
 							comboTarget2.addItem(i);
 						}
 						comboTarget2.setSelectedItem(selection);
@@ -756,18 +758,18 @@ public class Window extends JFrame {
 					target = (int) comboTarget2.getSelectedItem();
 					if (comboCritical2.getSelectedItem()==null || target > (int) comboCritical2.getSelectedItem()) {
 						comboCritical2.removeAllItems();
-						for (int i=(int) comboTarget2.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboTarget2.getSelectedItem()+1; i<Tmax+1; i++){
 							comboCritical2.addItem(i);
 						}
-					} else if (target > (int) comboCritical2.getItemAt(0)){
+					} else if (target >= (int) comboCritical2.getItemAt(0)){
 						int i = 0;
-						while (target > comboCritical2.getItemAt(i)) {
+						while (target >= comboCritical2.getItemAt(i)) {
 							comboCritical2.removeItemAt(i);
 						}
 					} else if (target < (int) comboCritical2.getItemAt(0)) {
 						int selection = (int) comboCritical2.getSelectedItem();
 						comboCritical2.removeAllItems();
-						for (int i=(int) comboTarget2.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboTarget2.getSelectedItem()+1; i<Tmax+1; i++){
 							comboCritical2.addItem(i);
 						}
 						comboCritical2.setSelectedItem(selection);
@@ -830,18 +832,18 @@ public class Window extends JFrame {
 					temperature[0] = (int) comboThreshold3.getSelectedItem();
 					if (comboTarget3.getSelectedItem()==null || temperature[0] > (int) comboTarget3.getSelectedItem()) {
 						comboTarget3.removeAllItems();
-						for (int i=(int) comboThreshold3.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold3.getSelectedItem()+1; i<Tmax; i++){
 							comboTarget3.addItem(i);
 						}
-					} else if (temperature[0] > (int) comboTarget3.getItemAt(0)){
+					} else if (temperature[0] >= (int) comboTarget3.getItemAt(0)){
 						int i = 0;
-						while (temperature[0] > comboTarget3.getItemAt(i)) {
+						while (temperature[0] >= comboTarget3.getItemAt(i)) {
 							comboTarget3.removeItemAt(i);
 						}
 					} else if (temperature[0] < (int) comboTarget3.getItemAt(0)) {
 						int selection = (int) comboTarget3.getSelectedItem();
 						comboTarget3.removeAllItems();
-						for (int i=(int) comboThreshold3.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboThreshold3.getSelectedItem()+1; i<Tmax; i++){
 							comboTarget3.addItem(i);
 						}
 						comboTarget3.setSelectedItem(selection);
@@ -864,18 +866,18 @@ public class Window extends JFrame {
 					target = (int) comboTarget3.getSelectedItem();
 					if (comboCritical3.getSelectedItem()==null || target > (int) comboCritical3.getSelectedItem()) {
 						comboCritical3.removeAllItems();
-						for (int i=(int) comboTarget3.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboTarget3.getSelectedItem()+1; i<Tmax+1; i++){
 							comboCritical3.addItem(i);
 						}
-					} else if (target > (int) comboCritical3.getItemAt(0)){
+					} else if (target >= (int) comboCritical3.getItemAt(0)){
 						int i = 0;
-						while (target > comboCritical3.getItemAt(i)) {
+						while (target >= comboCritical3.getItemAt(i)) {
 							comboCritical3.removeItemAt(i);
 						}
 					} else if (target < (int) comboCritical3.getItemAt(0)) {
 						int selection = (int) comboCritical3.getSelectedItem();
 						comboCritical3.removeAllItems();
-						for (int i=(int) comboTarget3.getSelectedItem(); i<Tmax; i++){
+						for (int i=(int) comboTarget3.getSelectedItem()+1; i<Tmax+1; i++){
 							comboCritical3.addItem(i);
 						}
 						comboCritical3.setSelectedItem(selection);
