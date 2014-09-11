@@ -18,7 +18,7 @@ public class DataManager {
 		try {
 			DataManager d = new DataManager();
 			int[] calendarData = d.checkCalendar();
-			File file = new File(path + "/fileProva.ini");
+			File file = new File(path + "/psyduck.ini");
 
 			if (!file.exists())
 				file.createNewFile();
