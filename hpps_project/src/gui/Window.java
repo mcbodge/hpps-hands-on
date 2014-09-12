@@ -84,10 +84,10 @@ public class Window extends JFrame {
 		rbMenuItem1 = new JRadioButtonMenuItem("User Defined", true);
 		group.add(rbMenuItem1);
 		menu.add(rbMenuItem1);
-		rbMenuItem2 = new JRadioButtonMenuItem("Power Efficiency");
+		rbMenuItem2 = new JRadioButtonMenuItem("Power Efficient");
 		group.add(rbMenuItem2);
 		menu.add(rbMenuItem2);
-		rbMenuItem3 = new JRadioButtonMenuItem("Cooling Efficieny");
+		rbMenuItem3 = new JRadioButtonMenuItem("Cooling Efficient");
 		group.add(rbMenuItem3);
 		menu.add(rbMenuItem3);
 		menuBar = new JMenuBar();
@@ -255,7 +255,7 @@ public class Window extends JFrame {
 		lbl6 = new JLabel(String.format("%.1f", tempToLabels[5])+" \u00b0C");
 		lbl7 = new JLabel(String.format("%.1f", tempToLabels[6])+" \u00b0C");
 		lbl8 = new JLabel(String.format("%.1f", tempToLabels[7])+" \u00b0C");
-		description2 = new JTextArea("You are using the Power efficiency program.\n"
+		description2 = new JTextArea("You are using the Power efficient program.\n"
 				+ "This program should be used when it is not so important to reach the target temperature immediately"
 				+ " and it allows to reduce the power consumption.\n\n"
 				+ "Select the minimum and the maximum power of the fan and set the following three needed values of temperature:\n"
@@ -266,7 +266,7 @@ public class Window extends JFrame {
 				+ " the emergency actions are performed.");
 		description2.setLineWrap(true);
 		description2.setWrapStyleWord(true);
-		description3 = new JTextArea("You are using the Cooling efficiency program.\n"
+		description3 = new JTextArea("You are using the Cooling efficient program.\n"
 				+ "This program should be used when the target temperature has to be reached as quickly as possible.\n\n"
 				+ "Select the minimum and the maximum power of the fan and set the following three needed values of temperature:\n"
 				+ "T threshold : if the temperature goes below this value, the fan is switched off;\n"
